@@ -1,4 +1,3 @@
-LocalHub
 LocalHub is a digital community platform designed to connect people looking for services with local workers and creators in their neighborhood (like Uttara, Dhaka). Built using Python Django, Bootstrap 5, and Vanilla JavaScript, it brings structure, trust, and secure digital payments to local everyday services.
 
 The Three Pillars of LocalHub
