@@ -1,0 +1,222 @@
+{% extends 'marketplace/base.html' %}
+{% block content %}
+<div class="container my-5 py-4">
+    
+    <!-- --- EXECUTIVE USER HUB HEADER --- -->
+    <div class="text-center mb-5 reveal-up">
+        <div class="badge px-4 py-2 rounded-pill mb-3 fw-bold shadow-sm text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.8px; {% if profile.role == 'seeker' %}background: rgba(0, 210, 211, 0.15); color: #00d2d3; border: 1px solid rgba(0, 210, 211, 0.3);{% else %}background: rgba(44, 62, 80, 0.15); color: #2c3e50; border: 1px solid rgba(44, 62, 80, 0.3);{% endif %}">
+            <span class="animate__animated animate__pulse animate__infinite d-inline-block me-2" style="color: currentColor;">●</span>{{ profile.get_role_display }} Mode Active
+        </div>
+        <h1 class="display-5 fw-extrabold text-dark mb-2">Welcome back, <span class="text-primary">{{ user.first_name|default:user.username }}</span></h1>
+        <p class="lead text-muted mx-auto small" style="max-width: 600px;">Manage your contract allocations, escrow ledgers, and hyper-local deployment tasks from one secure control deck.</p>
+    </div>
+
+    <!-- --- TRANSACTIONS & WALLET SYSTEM LEDGER MATRIX --- -->
+    <div class="row justify-content-center mb-5 reveal-up">
+        <div class="col-xl-10 col-lg-12">
+            <div class="card border-0 shadow-lg rounded-4 bg-white overflow-hidden">
+                <div class="row g-0">
+                    <!-- Left Column: Financial Control Deck -->
+                    <div class="col-md-6 text-white d-flex flex-column justify-content-center p-5" style="background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%);">
+                        <h6 class="text-uppercase small fw-bold tracking-wider text-white-50 mb-1" style="font-size: 0.7rem;">Total Available Escrow Balance</h6>
+                        <h1 class="display-4 fw-extrabold text-warning mb-4">৳{{ profile.balance|default:"0.00" }}</h1>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-info rounded-pill px-4 py-2.5 fw-bold text-white shadow transition-all hover-lift" data-bs-toggle="modal" data-bs-target="#addFundsModal">
+                                <i class="bi bi-plus-circle-fill me-1"></i> Add Funds
+                            </button>
+                            <button class="btn btn-outline-light rounded-pill px-4 py-2.5 fw-bold custom-btn-withdraw transition-all" data-bs-toggle="modal" data-bs-target="#withdrawModal">
+                                <i class="bi bi-arrow-up-right-circle me-1"></i> Withdraw
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Right Column: Verification Metadata -->
+                    <div class="col-md-6 p-5 bg-light border-start border-light-subtle">
+                        <div class="row g-4">
+                            <div class="col-6">
+                                <small class="text-muted d-block uppercase tracking-wide mb-1" style="font-size: 0.65rem; font-weight:700;">ACCOUNT STATUS</small>
+                                <span class="fw-bold text-success d-flex align-items-center"><i class="bi bi-patch-check-fill me-1.5 fs-5"></i> Verified Operator</span>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted d-block uppercase tracking-wide mb-1" style="font-size: 0.65rem; font-weight:700;">MEMBER SINCE</small>
+                                <span class="fw-bold text-dark d-flex align-items-center"><i class="bi bi-calendar-event me-1.5 text-secondary"></i> {{ user.date_joined|date:"M Y" }}</span>
+                            </div>
+                            <div class="col-12">
+                                <div class="p-3 bg-white border rounded-3 d-flex align-items-start border-light-subtle">
+                                    <i class="bi bi-shield-lock-fill text-info fs-4 me-3"></i>
+                                    <div>
+                                        <span class="text-uppercase fw-bold text-dark d-block mb-1" style="font-size: 0.65rem; letter-spacing: 0.5px;">Gateway Protection</span>
+                                        <small class="text-secondary d-block" style="font-size: 0.75rem; line-height: 1.4;">
+                                            Platform transactions are securely routed and authorized via the **SSLCommerz** enterprise encrypted bank layer.
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- --- HISTORICAL LEDGER TRANSACTION TABLE --- -->
+    <div class="row justify-content-center reveal-up" style="transition-delay: 0.1s;">
+        <div class="col-xl-10 col-lg-12">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+                <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center border-light-subtle">
+                    <h5 class="fw-extrabold text-dark mb-0" style="font-size: 1.05rem;"><i class="bi bi-clock-history text-secondary me-2"></i>Recent Transactions Ledger</h5>
+                    <span class="badge bg-light text-success border border-success-subtle px-3 py-1.5 fw-bold" style="font-size: 0.7rem;"><i class="bi bi-shield-check me-1"></i> Secured History</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;" class="text-secondary">
+                                <th class="border-0 px-4 py-3 fw-bold">Transaction ID</th>
+                                <th class="border-0 py-3 fw-bold">Timestamp</th>
+                                <th class="border-0 py-3 fw-bold">Allocation Context / Scope</th>
+                                <th class="border-0 py-3 fw-bold">Amount</th>
+                                <th class="border-0 px-4 py-3 fw-bold text-center">Verification Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for txn in history %}
+                            <tr class="transition-all custom-table-row">
+                                <td class="px-4 font-monospace small text-muted">#{{ txn.transaction_id|slice:":8" }}</td>
+                                <td class="small text-secondary">{{ txn.timestamp|date:"d M Y" }}</td>
+                                <td class="small fw-bold text-dark">
+                                    {% if txn.type == 'withdraw' %}
+                                        <span class="text-muted"><i class="bi bi-bank me-1.5 text-danger"></i>Wallet Withdrawal</span>
+                                    {% elif txn.type == 'deposit' %}
+                                        <span class="text-info"><i class="bi bi-wallet2 me-1.5 text-info"></i>SSLCommerz Deposit</span>
+                                    {% else %}
+                                        <i class="bi bi-file-earmark-text me-1.5 text-primary"></i>{{ txn.task.title|default:"Marketplace Settlement" }}
+                                    {% endif %}
+                                </td>
+                                <td class="small fw-extrabold {% if txn.type == 'withdraw' or txn.seeker == user %}text-danger{% else %}text-success{% endif %}">
+                                    {% if txn.type == 'withdraw' or txn.seeker == user %}-{% else %}+{% endif %}৳{{ txn.amount }}
+                                </td>
+                                <td class="px-4 text-center"><span class="badge bg-success-subtle text-success rounded-pill px-3 py-1.5 fw-bold" style="font-size: 0.65rem;">Settled Vault</span></td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center py-5 text-muted small">
+                                    <i class="bi bi-folder-x display-6 d-block text-light-subtle mb-2"></i>
+                                    No entry parameters or recent financial exchanges located inside your profile ledger node.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--MODAL 1: LIQUIDITY ADD FUNDS ======== -->
+<div class="modal fade" id="addFundsModal" tabindex="-1" aria-labelledby="addFundsModalLabel" aria-hidden="true" data-bs-backdrop="false" style="background: rgba(0,0,0,0.55); z-index: 1050;">
+    <div class="modal-dialog modal-dialog-centered" style="z-index: 1060;">
+        <div class="modal-content border-0 rounded-4 shadow-lg bg-white">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="fw-extrabold text-dark pt-3 ps-2" id="addFundsModalLabel">
+                    <i class="bi bi-wallet-fill text-success me-2"></i>Deposit Liquidity
+                </h5>
+                <button type="button" class="btn-close me-2" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{% url 'initiate_payment' %}" method="POST">
+                {% csrf_token %}
+                <div class="modal-body p-4 text-start">
+                    <p class="text-muted small mb-4">Enter target amount to deposit via our secure verification routing gateways (bKash, Nagad, Visa, Mastercard).</p>
+                    <div class="mb-4">
+                        <div class="input-group input-group-lg shadow-sm rounded-4 overflow-hidden">
+                            <span class="input-group-text bg-white border-end-0 text-success fw-extrabold px-3">৳</span>
+                            <input type="number" name="amount" class="form-control border-start-0 rounded-end-4 custom-modal-input fw-extrabold text-dark ps-2" placeholder="500" required min="10">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-info w-100 rounded-pill fw-bold py-3 text-white shadow-sm transition-all hover-lift">Authorize Gateway Checkout</button>
+                </div>
+            </form>
+            <div class="modal-footer border-0 justify-content-center pb-4 pt-0">
+                <div class="text-center">
+                    <img src="https://securepay.sslcommerz.com/gw/asset/img/sslcommerz-banner.png" class="img-fluid opacity-75" style="max-height: 20px; filter: grayscale(20%);">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--      MODAL 2: BALANCE WITHDRAWAL (CLEAN UNIFIED SINGLE NODE FIX)===== -->
+<div class="modal fade" id="withdrawModal" tabindex="-1" aria-labelledby="withdrawModalLabel" aria-hidden="true" data-bs-backdrop="false" style="background: rgba(0,0,0,0.55); z-index: 1050;">
+    <div class="modal-dialog modal-dialog-centered" style="z-index: 1060;">
+        <div class="modal-content border-0 rounded-4 shadow-lg bg-white">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="fw-extrabold text-dark pt-3 ps-2" id="withdrawModalLabel">
+                    <i class="bi bi-bank2 text-danger me-2"></i>Withdraw Ledger Balance
+                </h5>
+                <button type="button" class="btn-close me-2" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{% url 'withdraw_funds' %}" method="POST">
+                {% csrf_token %}
+                <div class="modal-body p-4 text-start">
+                    <div class="mb-3">
+                        <label class="small fw-extrabold text-secondary text-uppercase tracking-wider mb-2" style="font-size: 0.65rem;">Select Disbursal Target Channel</label>
+                        <select name="method" class="form-select border rounded-3 custom-modal-input py-2" required>
+                            <option value="bKash">bKash Mobile Wallet</option>
+                            <option value="Nagad">Nagad Mobile Wallet</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="small fw-extrabold text-secondary text-uppercase tracking-wider mb-2" style="font-size: 0.65rem;">Account Routing Number</label>
+                        <input type="text" name="account_no" class="form-control border rounded-3 custom-modal-input py-2" placeholder="017XXXXXXXX" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="small fw-extrabold text-secondary text-uppercase tracking-wider mb-2" style="font-size: 0.65rem;">Amount to Settle (৳)</label>
+                        <input type="number" name="amount" class="form-control border rounded-3 custom-modal-input fw-extrabold text-dark py-2" min="100" placeholder="Minimum 100 BDT" required>
+                    </div>
+                    <button type="submit" class="btn btn-dark w-100 rounded-pill fw-bold py-3 text-white shadow-sm transition-all hover-lift" style="background-color: #2c3e50; border: none;">Confirm Withdrawal Disbursal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- --- PROFILE HUB INTERACTIVE CUSTOM PROPERTIES --- -->
+<style>
+    /* Premium Input Interaction Layers */
+    .custom-modal-input {
+        border-color: #ced4da;
+        background-color: #fafbfc;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        font-size: 0.9rem;
+    }
+    .custom-modal-input:focus {
+        border-color: #00d2d3 !important;
+        box-shadow: 0 0 0 4px rgba(0, 210, 211, 0.15) !important;
+        background-color: #ffffff;
+    }
+
+    /* Withdrawal Custom Interactive Hover Button overrides */
+    .custom-btn-withdraw {
+        border-color: rgba(255, 255, 255, 0.4);
+        color: white;
+    }
+    .custom-btn-withdraw:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-color: white;
+        transform: translateY(-2px);
+    }
+
+    /* Interactive Ledger row tracking transitions */
+    .custom-table-row {
+        transition: background-color 0.25s ease;
+    }
+    .custom-table-row:hover {
+        background-color: rgba(0, 210, 211, 0.02) !important;
+    }
+
+    /* Core Micro-Movement Properties */
+    .transition-all { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+    .hover-lift:hover { transform: translateY(-3px); }
+    .fw-extrabold { font-weight: 800; }
+    .tracking-wider { letter-spacing: 0.5px; }
+</style>
+{% endblock %}

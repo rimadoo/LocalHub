@@ -1,0 +1,116 @@
+{% extends 'marketplace/base.html' %}
+{% block content %}
+
+<!-- --- PREMIUM FEEDBACK BANNER --- -->
+<section class="position-relative overflow-hidden" style="background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%); padding: 60px 0; border-bottom: 4px solid #00d2d3;">
+    <!-- Ambient Light Injectors -->
+    <div class="position-absolute" style="top: -40%; left: 10%; width: 250px; height: 250px; background: rgba(0, 210, 211, 0.08); border-radius: 50%; filter: blur(50px); pointer-events: none;"></div>
+    
+    <div class="container position-relative z-3 text-center">
+        <span class="badge bg-soft-info text-uppercase text-info fw-bold px-3 py-2 mb-3 animate__animated animate__fadeInDown" style="background: rgba(0,210,211,0.15); font-size: 0.75rem; letter-spacing: 1px;">
+            <i class="bi bi-chat-heart-fill me-2"></i>Platform Evaluation
+        </span>
+        <h1 class="display-5 fw-extrabold text-white mb-2 animate__animated animate__fadeInUp">
+            How Are We Doing?
+        </h1>
+        <p class="lead text-white-50 mx-auto mb-0 animate__animated animate__fadeInUp animate__delay-1s" style="max-width: 600px; font-weight: 400; font-size: 0.95rem;">
+            Your operational metrics and structural feedback allow us to optimize system configurations, improve agent audits, and smooth local escrow payment paths.
+        </p>
+    </div>
+</section>
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-6">
+            <!-- --- ELEVATED FEEDBACK CARD --- -->
+            <div class="card border-0 shadow-lg p-5 bg-white rounded-4 reveal-up">
+                
+                <!-- Quality Assurance Mock Matrix -->
+                <div class="mb-4 text-center">
+                    <label class="form-label small fw-extrabold text-uppercase text-secondary tracking-wider mb-2" style="font-size: 0.65rem;">Platform Experience Rating</label>
+                    <div class="d-flex justify-content-center gap-2 text-warning fs-3 interactive-stars">
+                        <i class="bi bi-star-fill cursor-pointer transition-all"></i>
+                        <i class="bi bi-star-fill cursor-pointer transition-all"></i>
+                        <i class="bi bi-star-fill cursor-pointer transition-all"></i>
+                        <i class="bi bi-star-fill cursor-pointer transition-all"></i>
+                        <i class="bi bi-star shadow-sm-none cursor-pointer transition-all"></i>
+                    </div>
+                </div>
+
+                <!-- Core Form Fields -->
+                <form onsubmit="event.preventDefault(); alert('Telemetry Dispatch: Thank you! Your platform performance logs have been successfully aggregated for admin review.'); this.reset();">
+                    {% csrf_token %}
+                    
+                    <!-- Subject Category Selection Selection -->
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold text-secondary tracking-wide mb-2">
+                            <i class="bi bi-tags-fill text-primary me-1"></i>Inquiry Classification
+                        </label>
+                        <select class="form-select rounded-3 custom-feedback-input" required>
+                            <option value="" selected disabled>Select inquiry perimeter...</option>
+                            <option value="bug">Report System Bug / Framework Crash</option>
+                            <option value="payment">Escrow Balance / Payment Interface Dispute</option>
+                            <option value="service">Marketplace Operational Feedback</option>
+                            <option value="other">Other System Constraints</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Text Description Parameter Area -->
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold text-secondary tracking-wide mb-2">
+                            <i class="bi bi-pencil-square text-info me-1"></i>Detailed Performance Notes
+                        </label>
+                        <textarea class="form-control rounded-4 custom-feedback-input p-3" rows="4" placeholder="Detail your transaction tracking experience, dashboard ease, or provider interactions clearly..." required></textarea>
+                    </div>
+
+                    <!-- Platform System Disclaimer -->
+                    <div class="p-3 mb-4 rounded-3 d-flex align-items-start border" style="background: rgba(0, 210, 211, 0.03); border-color: rgba(0, 210, 211, 0.12) !important;">
+                        <i class="bi bi-shield-check-fill text-info fs-5 me-3 mt-0.5"></i>
+                        <div>
+                            <span class="text-uppercase fw-bold text-dark d-block mb-1" style="font-size: 0.6rem; letter-spacing: 0.5px;">Identity Isolation Guard</span>
+                            <small class="text-secondary d-block" style="font-size: 0.7rem; line-height: 1.4;">
+                                <strong>Anonymity Protocol:</strong> System feedback data tracks aggregate logs securely. Specific database profile attributes are protected unless escalation explicitly overrides parameters.
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- Submission Dispatch Interactive Trigger -->
+                    <button type="submit" class="btn btn-info w-100 py-3 rounded-pill fw-bold text-white shadow-sm transition-all hover-lift">
+                        <i class="bi bi-send-check-fill me-2"></i>Transmit Performance Packet
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- --- CANVAS STRUCTURAL TRANSITIONS AND INPUT RULES --- -->
+<style>
+    /* Premium Input Interaction Layers */
+    .custom-feedback-input {
+        border: 1px solid #ced4da;
+        font-size: 0.9rem;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        background-color: #fafbfc;
+    }
+    .custom-feedback-input:focus {
+        border-color: #00d2d3 !important;
+        box-shadow: 0 0 0 4px rgba(0, 210, 211, 0.15) !important;
+        background-color: #ffffff;
+    }
+
+    /* Star Interaction Animation Mock Mechanics */
+    .interactive-stars i:hover {
+        transform: scale(1.2);
+        color: #00d2d3 !important;
+    }
+
+    /* Core Micro-Movement Properties */
+    .transition-all { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+    .hover-lift:hover { transform: translateY(-4px); box-shadow: 0 12px 25px rgba(0, 210, 211, 0.2) !important; }
+    .tracking-wider { letter-spacing: 1px; }
+    .fw-extrabold { font-weight: 800; }
+    .cursor-pointer { cursor: pointer; }
+</style>
+
+{% endblock %}

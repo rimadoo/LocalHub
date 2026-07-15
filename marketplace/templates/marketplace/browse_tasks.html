@@ -1,0 +1,136 @@
+{% extends 'marketplace/base.html' %}
+{% block content %}
+<div class="container my-5">
+    <div class="row g-4">
+        
+        <!-- --- LEFT SIDEBAR: PROFILE & CONTROLS --- -->
+        <div class="col-lg-4 col-md-5 reveal-left">
+            <!-- Modern Dark-Mode Wallet Matrix -->
+            <div class="card border-0 shadow-lg p-4 rounded-4 text-white mb-4 position-relative overflow-hidden" style="background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%); border-bottom: 4px solid #00d2d3;">
+                <div class="position-absolute" style="top: -20%; right: -10%; width: 120px; height: 120px; background: rgba(0, 210, 211, 0.15); border-radius: 50%; filter: blur(25px); pointer-events: none;"></div>
+                
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="text-uppercase small fw-bold tracking-wider opacity-75 mb-0" style="font-size: 0.75rem; letter-spacing: 0.5px;">Available Escrow Balance</h6>
+                    <div class="p-2 bg-dark rounded-3 text-info border border-secondary" style="--bs-bg-opacity: 0.4;"><i class="bi bi-wallet2 fs-5"></i></div>
+                </div>
+                <h1 class="fw-extrabold mb-3" style="font-size: 2.2rem;">৳{{ user.profile.balance }}</h1>
+                
+                <div class="d-flex justify-content-between align-items-center border-top border-secondary pt-3 mt-2" style="--bs-border-opacity: 0.3;">
+                    <span class="small text-white-50">Profile Identity:</span>
+                    <span class="badge rounded-pill px-3 py-1.5 fw-bold" style="background: #00d2d3; color: #2c3e50;">{{ user.profile.get_role_display }}</span>
+                </div>
+            </div>
+            
+            <!-- Context Action Routers -->
+            <div class="list-group border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+                <a href="{% url 'seeker_dashboard' %}" class="list-group-item list-group-item-action py-3 border-0 transition-all custom-sidebar-item">
+                    <i class="bi bi-plus-circle-fill me-2 text-primary"></i> Post New Task Requirement
+                </a>
+                <a href="{% url 'daily_labor' %}" class="list-group-item list-group-item-action py-3 border-0 transition-all custom-sidebar-item">
+                    <i class="bi bi-grid-3x3-gap-fill me-2 text-info"></i> Browse Active Channels
+                </a>
+            </div>
+        </div>
+        
+        <!-- --- RIGHT SIDEBAR: ACTIVE TASK PIPELINE --- -->
+        <div class="col-lg-8 col-md-7">
+            <div class="mb-4 reveal-up">
+                <h4 class="fw-extrabold text-dark mb-1">Your Operational Record Logs</h4>
+                <p class="text-muted small">Monitor active proposals, submit ledger settlements, and trace verified entries.</p>
+            </div>
+
+            {% for task in my_tasks %}
+            <!-- Interactive Task Component Card -->
+            <div class="card border-0 shadow-sm mb-4 rounded-4 premium-log-card bg-white reveal-up" style="animation-delay: {{ forloop.counter0|add:1|multiply:0.05 }}s">
+                <div class="card-body p-4">
+                    <div class="row align-items-center g-3">
+                        <div class="col-lg-8 col-md-12">
+                            <div class="d-flex align-items-center mb-2 flex-wrap gap-2">
+                                <span class="badge px-3 py-1.5 rounded-2 text-uppercase fw-bold" style="font-size: 0.65rem; letter-spacing: 0.5px; {% if task.category == 'labor' %}background: rgba(0, 210, 211, 0.1); color: #00b8b9;{% else %}background: rgba(52, 152, 219, 0.1); color: #2980b9;{% endif %}">
+                                    {{ task.get_category_display }}
+                                </span>
+                                <small class="text-muted"><i class="bi bi-calendar3 me-1"></i> {{ task.created_at|date:"D, d M Y" }}</small>
+                            </div>
+                            <h5 class="fw-extrabold text-dark mb-2">{{ task.title }}</h5>
+                            <p class="text-muted small mb-0 d-flex flex-wrap align-items-center gap-3">
+                                <span><i class="bi bi-geo-alt-fill text-danger me-1"></i> {{ task.location }}</span>
+                                <span class="text-light-subtle d-none d-sm-inline">|</span> 
+                                <span><i class="bi bi-people-fill text-primary me-1"></i> <strong class="text-dark">{{ task.applications.count }}</strong> Proposals Submitted</span>
+                            </p>
+                        </div>
+                        
+                        <div class="col-lg-4 col-md-12 text-lg-end mt-3 mt-lg-0 border-start-lg">
+                            <h3 class="fw-extrabold text-primary mb-3">৳{{ task.budget }}</h3>
+                            
+                            <div class="d-grid gap-2">
+                                <a href="{% url 'task_detail' task.id %}" class="btn btn-sm btn-outline-info rounded-pill fw-bold py-2 custom-btn-outline">
+                                    <i class="bi bi-envelope-paper me-1"></i> View Proposals
+                                </a>
+                                <a href="{% url 'complete_task' task.id %}" class="btn btn-sm btn-success rounded-pill fw-bold py-2 shadow-sm transition-all hover-lift">
+                                    <i class="bi bi-patch-check-fill me-1"></i> Release Escrow
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <!-- Clean Empty State Layer -->
+            <div class="card border-0 shadow-sm p-5 text-center rounded-4 bg-white reveal-up">
+                <div class="d-inline-flex p-4 rounded-circle bg-light text-muted mb-4 fs-1">
+                    <i class="bi bi-folder-x"></i>
+                </div>
+                <h5 class="fw-bold text-dark">No Activity Recorded Yet</h5>
+                <p class="text-muted small mb-4 mx-auto" style="max-width: 320px;">You currently have no active posted task requirements or matching system contracts logged.</p>
+                <a href="{% url 'daily_labor' %}" class="btn btn-info btn-sm rounded-pill px-4 py-2 fw-bold text-white shadow-sm transition-all hover-lift">
+                    Start Exploring Ecosystem
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- --- CUSTOM SIDEBAR & INTERACTIVE LOG PROPERTIES --- -->
+<style>
+    /* Premium Hover Movement Properties */
+    .premium-log-card {
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        border-left: 5px solid #00d2d3 !important;
+    }
+    .premium-log-card:hover {
+        transform: translateX(6px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.06) !important;
+    }
+    
+    .custom-sidebar-item {
+        color: #4b6584;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+    .custom-sidebar-item:hover {
+        background-color: rgba(0, 210, 211, 0.05) !important;
+        color: #00b8b9 !important;
+        padding-left: 1.5rem !important;
+    }
+
+    .custom-btn-outline {
+        border-color: #00d2d3;
+        color: #00b8b9;
+        transition: all 0.3s ease;
+    }
+    .custom-btn-outline:hover {
+        background-color: #00d2d3;
+        border-color: #00d2d3;
+        color: white;
+    }
+
+    .transition-all { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+    .hover-lift:hover { transform: translateY(-2px); }
+    .fw-extrabold { font-weight: 800; }
+    
+    @media (min-width: 992px) {
+        .border-start-lg { border-start: 1px solid #eef0f2; padding-left: 1.5rem; }
+    }
+</style>
+{% endblock %}

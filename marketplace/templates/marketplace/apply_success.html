@@ -1,0 +1,77 @@
+{% extends 'marketplace/base.html' %}
+{% block content %}
+
+<div class="container my-5 py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <!-- --- ELEVATED STATUS CONFIRMATION CARD --- -->
+            <div class="card border-0 shadow-lg p-5 rounded-4 text-center bg-white reveal-up">
+                
+                <!-- Animated Transaction Check Node -->
+                <div class="mb-4 d-flex justify-content-center">
+                    <div class="success-icon-wrap">
+                        <i class="bi bi-check-circle-fill"></i>
+                    </div>
+                </div>
+                
+                <h2 class="fw-extrabold text-dark mb-2">Application Sent!</h2>
+                <p class="text-muted small px-2 mb-4">
+                    Your interest in <strong class="text-dark">"{{ task.title|default:'Electrical Wiring Fix' }}"</strong> has been recorded cleanly. The Seeker system parameters have been alerted instantly via our integrated **SMS Notification Pipeline**.
+                </p>
+                
+                <!-- System Compliance Operations Manual -->
+                <div class="bg-light p-3 rounded-3 mb-4 text-start border border-light">
+                    <span class="text-uppercase fw-bold text-primary d-block mb-2 tracking-wider" style="font-size: 0.65rem; letter-spacing: 1px;">
+                        <i class="bi bi-shield-fill-exclamation me-1"></i>Next Steps:
+                    </span>
+                    <ul class="small mb-0 ps-3 text-secondary" style="line-height: 1.6;">
+                        <li class="mb-1">Wait for the seeker to contact you via phone or email routing channels.</li>
+                        <li class="mb-1">Keep your live dashboard center open for real-time operation status hooks.</li>
+                        <li class="mb-0 fw-bold text-dark">Do not start work or deploy until the task status updates to <span class="text-success">"Accepted"</span>.</li>
+                    </ul>
+                </div>
+
+                <!-- Strategic Interface Router Links -->
+                <div class="d-flex flex-column gap-2">
+                    <a href="{% url 'daily_labor' %}" class="btn btn-info py-2.5 rounded-pill fw-bold text-white shadow-sm transition-all hover-lift">
+                        <i class="bi bi-search me-2"></i>Browse More Tasks
+                    </a>
+                    <a href="{% url 'login_success' %}" class="btn btn-outline-secondary py-2.5 rounded-pill transition-all hover-lift" style="font-weight: 600;">
+                        <i class="bi bi-speedometer2 me-2"></i>My Dashboard
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- --- SUCCESS INTERACTION INTERFACE STYLES --- -->
+<style>
+    /* System Interaction Elements */
+    .success-icon-wrap {
+        width: 80px;
+        height: 80px;
+        background: rgba(0, 210, 211, 0.1);
+        color: #00d2d3;
+        font-size: 3.5rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: pulseCheck 2.5s infinite ease-in-out;
+    }
+
+    @keyframes pulseCheck {
+        0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 210, 211, 0.2); }
+        50% { transform: scale(1.05); box-shadow: 0 0 20px 10px rgba(0, 210, 211, 0); }
+    }
+
+    /* Core Micro-Movement Properties */
+    .transition-all { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+    .hover-lift:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.06) !important; }
+    .tracking-wider { letter-spacing: 0.5px; }
+    .fw-extrabold { font-weight: 800; }
+</style>
+
+{% endblock %}

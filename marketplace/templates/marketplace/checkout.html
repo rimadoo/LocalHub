@@ -1,0 +1,201 @@
+{% extends 'marketplace/base.html' %}
+{% block content %}
+<div class="container my-5 py-4">
+    <div class="row g-5">
+        
+        <div class="col-md-7 col-lg-8 reveal-left">
+            <div class="mb-4">
+                <h4 class="fw-extrabold text-dark mb-1">Shipping &amp; Settlement Details</h4>
+                <p class="text-muted small">Please verify your localized dispatch credentials and preferred transaction path.</p>
+            </div>
+
+            <form action="{% url 'order_success' %}" method="POST" class="needs-validation" id="checkout-form">
+                {% csrf_token %}
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label small fw-bold text-secondary"><i class="bi bi-person me-1"></i>Full Name</label>
+                        <input type="text" name="full_name" class="form-control rounded-3 custom-checkout-input" value="{{ user.first_name }}" required>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label small fw-bold text-secondary"><i class="bi bi-geo-alt me-1"></i>Delivery Address (Uttara Area Target Node)</label>
+                        <input type="text" name="address" class="form-control rounded-3 custom-checkout-input" placeholder="Sector, Road, House No. e.g. Sector 10, Road 4" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label small fw-bold text-secondary"><i class="bi bi-telephone me-1"></i>Contact Phone</label>
+                        <input type="text" name="phone" class="form-control rounded-3 custom-checkout-input" placeholder="+8801XXXXXXXXX" required>
+                    </div>
+                </div>
+
+                <hr class="my-4 border-light-subtle">
+
+                <h4 class="mb-3 fw-extrabold text-dark">Payment Rails Integration</h4>
+                <div class="row g-3 my-2">
+                    <div class="col-sm-6">
+                        <div class="payment-card p-3 rounded-4 d-flex align-items-center cursor-pointer transition-all active-payment-card">
+                            <input id="cod" name="paymentMethod" type="radio" value="COD" class="form-check-input me-3 accent-teal" checked required>
+                            <label class="form-check-label w-100 cursor-pointer" for="cod">
+                                <strong class="d-block text-dark small fw-bold">Cash on Delivery</strong>
+                                <span class="text-muted d-block" style="font-size: 0.7rem;">Settle with cash upon package handoff.</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="payment-card p-3 rounded-4 d-flex align-items-center cursor-pointer transition-all">
+                            <input id="digital" name="paymentMethod" type="radio" value="Digital" class="form-check-input me-3 accent-teal" required>
+                            <label class="form-check-label w-100 cursor-pointer" for="digital">
+                                <strong class="d-block text-dark small fw-bold">bKash / Nagad Wallet</strong>
+                                <span class="text-muted d-block" style="font-size: 0.7rem;">Automated routing via digital gateways.</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <input type="hidden" name="cart_json_data" id="cart-json-data">
+
+                <button class="w-100 btn btn-info btn-lg rounded-pill fw-bold mt-4 shadow text-white py-3 transition-all hover-lift" type="submit">
+                    <i class="bi bi-shield-lock-fill me-2"></i>Confirm Order &amp; Initialize Payment
+                </button>
+            </form>
+        </div>
+
+        <div class="col-md-5 col-lg-4 reveal-right">
+            <div class="card border-0 shadow-sm rounded-4 p-4 bg-white sticky-md-top" style="top: 100px; z-index: 4;">
+                <h5 class="d-flex justify-content-between align-items-center mb-4 fw-extrabold text-dark">
+                    <span>Order Summary</span>
+                    <span class="badge rounded-pill bg-dark text-info px-3" id="cart-count-badge">0</span>
+                </h5>
+                
+                <ul class="list-group list-group-flush mb-3 scroll-y-custom" id="dynamic-cart-list" style="max-height: 280px; overflow-y: auto;"></ul>
+
+                <ul class="list-group list-group-flush mb-2">
+                    <li class="list-group-item d-flex justify-content-between bg-transparent border-top border-light-subtle px-0 pt-3 mt-2">
+                        <span class="fw-bold text-dark">Total Gross Amount</span>
+                        <strong class="text-success fs-5 fw-extrabold" id="cart-total-price">৳0.00</strong>
+                    </li>
+                </ul>
+                
+                <div class="text-center mt-3 border-top pt-2">
+                    <button onclick="clearCart()" class="btn btn-link btn-sm text-danger text-decoration-none fw-bold transition-all hover-left">
+                        <i class="bi bi-trash3-fill me-1"></i> Abandon &amp; Purge Basket
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    /* Custom Input States */
+    .custom-checkout-input {
+        border: 1px solid #ced4da;
+        padding: 0.65rem 1rem;
+        font-size: 0.9rem;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .custom-checkout-input:focus {
+        border-color: #00d2d3 !important;
+        box-shadow: 0 0 0 4px rgba(0, 210, 211, 0.15) !important;
+    }
+
+    /* Interactive Radio Integration Cards */
+    .payment-card {
+        border: 2px solid #eef0f2;
+        background: #fafbfc;
+    }
+    .payment-card:hover {
+        border-color: #00d2d3;
+        background: #ffffff;
+    }
+    .active-payment-card {
+        border-color: #00d2d3 !important;
+        background: rgba(0, 210, 211, 0.02) !important;
+    }
+    .accent-teal {
+        accent-color: #00d2d3;
+    }
+
+    /* Checkout Micro-Movements */
+    .transition-all { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+    .hover-lift:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0, 210, 211, 0.25) !important; }
+    .cursor-pointer { cursor: pointer; }
+    .fw-extrabold { font-weight: 800; }
+    
+    /* Elegant Custom Scrollbar for heavy carts */
+    .scroll-y-custom::-webkit-scrollbar { width: 4px; }
+    .scroll-y-custom::-webkit-scrollbar-track { background: #f1f2f6; }
+    .scroll-y-custom::-webkit-scrollbar-thumb { background: #ced4da; border-radius: 10px; }
+</style>
+
+<script>
+    function loadCheckout() {
+        const rawData = localStorage.getItem('creative_cart');
+        let cart = JSON.parse(rawData) || [];
+        
+        let listContainer = document.getElementById('dynamic-cart-list');
+        let totalDisplay = document.getElementById('cart-total-price');
+        let badge = document.getElementById('cart-count-badge');
+        let hiddenInput = document.getElementById('cart-json-data');
+        
+        let total = 0;
+
+        if (cart.length === 0) {
+            if (listContainer) listContainer.innerHTML = '<li class="text-center py-5 text-muted animate__animated animate__fadeIn"><i class="bi bi-cart-x fs-2 d-block mb-2 text-light-subtle"></i>Your cart is empty.</li>';
+            if (totalDisplay) totalDisplay.innerText = "৳0.00";
+            if (badge) badge.innerText = "0";
+            return;
+        }
+
+        if (listContainer) {
+            listContainer.innerHTML = cart.map((item, index) => {
+                let itemPrice = parseFloat(item.price) || 0;
+                total += itemPrice;
+
+                return `
+                    <li class="list-group-item d-flex justify-content-between lh-sm bg-transparent border-0 px-0 mb-2 border-bottom pb-2 animate__animated animate__fadeInUp" style="animation-delay: ${index * 0.05}s">
+                        <div>
+                            <h6 class="my-0 fw-bold text-dark small">${item.title}</h6>
+                            <small class="text-muted" style="font-size:0.7rem;">Asset ID: #CRT-${item.id}</small>
+                        </div>
+                        <span class="fw-bold text-primary small">৳${itemPrice.toFixed(2)}</span>
+                    </li>
+                `;
+            }).join('');
+        }
+
+        if (totalDisplay) totalDisplay.innerText = "৳" + total.toFixed(2);
+        if (badge) badge.innerText = cart.length;
+        if (hiddenInput) hiddenInput.value = JSON.stringify(cart);
+    }
+
+    function clearCart() {
+        localStorage.removeItem('creative_cart');
+        loadCheckout();
+        window.location.href = "{% url 'creative_shop' %}";
+    }
+
+    // Interactive JavaScript helper to handle visual shifting on payment methods selection clicks
+    document.addEventListener('DOMContentLoaded', () => {
+        loadCheckout();
+
+        const radios = document.querySelectorAll('input[name="paymentMethod"]');
+        radios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                radios.forEach(r => r.closest('.payment-card').classList.remove('active-payment-card'));
+                if (this.checked) {
+                    this.closest('.payment-card').classList.add('active-payment-card');
+                }
+            });
+        });
+    });
+
+    const checkoutForm = document.getElementById('checkout-form');
+    if (checkoutForm) {
+        checkoutForm.onsubmit = function() {
+            setTimeout(() => { 
+                localStorage.removeItem('creative_cart'); 
+            }, 500);
+        };
+    }
+</script>
+{% endblock %}

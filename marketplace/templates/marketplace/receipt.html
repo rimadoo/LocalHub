@@ -1,0 +1,141 @@
+{% extends 'marketplace/base.html' %}
+{% block content %}
+
+<div class="container my-5 py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-6">
+            <!-- --- ELEVATED PLATFORM VAULT RECEIPT --- -->
+            <div class="card border-0 shadow-lg p-5 text-center bg-white rounded-5 reveal-up printable-ledger-node" style="border-top: 8px solid #00d2d3 !important;">
+                
+                <!-- Print-Only Executive Company Heading -->
+                <div class="d-none print-only-brand text-start border-bottom pb-3 mb-4">
+                    <h3 class="fw-extrabold text-dark tracking-wider mb-1">LOCAL<span class="text-info">HUB</span> ESCROW CLEARANCE</h3>
+                    <small class="text-muted d-block">System Task Settlement &amp; Disbursal Ledger</small>
+                    <small class="text-muted d-block">Authorized Date: {% now "D, d M Y, H:i" %}</small>
+                </div>
+
+                <!-- Animated Invoice Vector Badge -->
+                <div class="mb-4 d-flex justify-content-center no-print">
+                    <div class="ledger-receipt-icon animate__animated animate__zoomIn">
+                        <i class="bi bi-receipt"></i>
+                    </div>
+                </div>
+                
+                <h2 class="fw-extrabold text-dark mb-1">Settlement Receipt</h2>
+                <p class="text-muted small font-monospace mb-4">Core Txn Ref: <span class="fw-bold text-dark">#{{ txn.transaction_id|default:"TXN-DEB-7729X" }}</span></p>
+                
+                <hr class="my-4 border-light-subtle">
+                
+                <!-- Financial Metadata Audit List -->
+                <div class="p-1 mb-4 text-start">
+                    <div class="d-flex justify-content-between align-items-center mb-3" style="font-size: 0.9rem;">
+                        <span class="text-secondary fw-semibold">Task Completed:</span>
+                        <span class="fw-bold text-dark text-end ms-3">{{ txn.task.title|default:"System Contract Allocation" }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-0" style="font-size: 0.9rem;">
+                        <span class="text-secondary fw-semibold">Disbursed To:</span>
+                        <span class="badge bg-light text-primary border px-2.5 py-1.5 fw-bold font-monospace">@{{ txn.provider.username|default:"verified_operator" }}</span>
+                    </div>
+                </div>
+                
+                <!-- Cleared Funds Balance Block -->
+                <div class="bg-light p-4 rounded-4 mb-4 border border-light-subtle transition-all hover-lift">
+                    <small class="text-muted fw-extrabold text-uppercase tracking-wider d-block mb-1" style="font-size: 0.6rem;">Settled Net Amount</small>
+                    <h2 class="fw-extrabold text-success mb-1" style="font-size: 2.2rem;">৳{{ txn.amount|default:"0.00" }}</h2>
+                    <span class="badge bg-success-subtle text-success rounded-pill px-3 py-1 fw-bold" style="font-size: 0.65rem; letter-spacing: 0.5px;">
+                        <i class="bi bi-shield-check me-1"></i>Funds Dispatched to Supplier Balance
+                    </span>
+                </div>
+
+                <!-- Automated Gateway Pipeline Alert -->
+                <div class="p-3 mb-4 rounded-3 d-flex align-items-start text-start border no-print" style="background: rgba(0, 210, 211, 0.03); border-color: rgba(0, 210, 211, 0.12) !important;">
+                    <i class="bi bi-chat-left-text-fill text-info fs-5 me-3 mt-0.5"></i>
+                    <div>
+                        <span class="text-uppercase fw-bold text-dark d-block mb-1" style="font-size: 0.6rem; letter-spacing: 0.5px;">SMS Alert Pipeline</span>
+                        <small class="text-secondary d-block" style="font-size: 0.7rem; line-height: 1.4;">
+                            An automated SMS confirmation handshake routing notification has been compiled and dispatched to both operators regarding this escrow release.
+                        </small>
+                    </div>
+                </div>
+
+                <!-- Strategic Control Router Actions -->
+                <div class="d-flex flex-column gap-2">
+                    <button onclick="window.print()" class="btn btn-info py-3 rounded-pill fw-bold text-white shadow-sm transition-all hover-lift no-print">
+                        <i class="bi bi-file-earmark-pdf-fill me-2"></i>Download PDF / Print Receipt
+                    </button>
+                    <a href="{% url 'login_success' %}" class="btn btn-link text-muted text-decoration-none small fw-semibold mt-1 no-print">
+                        <i class="bi bi-speedometer2 me-1"></i>Return to User Hub
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- --- INVOICING MEDIA LAYOUT AND ANIMATION PROPERTIES --- -->
+<style>
+    /* Premium Vector Floating Halo Elements */
+    .ledger-receipt-icon {
+        width: 85px;
+        height: 85px;
+        background: rgba(0, 210, 211, 0.08);
+        color: #00d2d3;
+        font-size: 3.2rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: invoiceFloat 3s infinite ease-in-out;
+        border: 2px dashed rgba(0, 210, 211, 0.3);
+    }
+
+    @keyframes invoiceFloat {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-5px); }
+    }
+
+    /* Core Micro-Movement Properties */
+    .transition-all { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+    .hover-lift:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05) !important; }
+    .tracking-wider { letter-spacing: 0.5px; }
+    .fw-extrabold { font-weight: 800; }
+
+    /* ─── HARD PRINT / PDF GENERATION MEDIA RULES ─── */
+    @media print {
+        /* Wipe out system menus and interaction items */
+        .no-print, nav, footer, .navbar, .btn, .ledger-receipt-icon {
+            display: none !important;
+        }
+        body {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+        }
+        .container {
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+        .printable-ledger-node {
+            box-shadow: none !important;
+            border: 2px dashed #2c3e50 !important;
+            padding: 2rem !important;
+            border-radius: 12px !important;
+            background: #ffffff !important;
+            margin: 0 auto !important;
+            max-width: 100% !important;
+        }
+        .print-only-brand {
+            display: block !important;
+        }
+        .bg-light {
+            background-color: #f8f9fa !important;
+            border: 1px solid #dee2e6 !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+    }
+</style>
+
+{% endblock %}

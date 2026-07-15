@@ -1,0 +1,255 @@
+{% extends 'marketplace/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5 py-2">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-5 p-4 rounded-4 shadow-sm bg-white border-start border-info border-5 reveal-up">
+        <div>
+            <span class="text-uppercase text-primary fw-bold small tracking-wider" style="letter-spacing: 1px;">C2C Art Distribution</span>
+            <h2 class="fw-extrabold text-dark mb-1 mt-1">🎨 Creative Artisan Gallery</h2>
+            <p class="text-muted mb-0 small">Discover, track, and purchase verified creations from local producers. All items bypass intermediate platform fees.</p>
+        </div>
+        <a href="{% url 'add_creative_item' %}" class="btn btn-info px-4 py-3 fw-bold rounded-pill shadow-sm text-white transition-all hover-lift w-100 w-sm-auto">
+            <i class="bi bi-patch-plus-fill me-2"></i>Monetize Your Craft
+        </a>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-3 col-md-4 reveal-left">
+            <div class="card border-0 shadow-sm p-4 sticky-top rounded-4 bg-white" style="top: 100px; z-index: 5;">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="p-2 bg-light rounded-3 text-info me-3 border border-light-subtle"><i class="bi bi-funnel-fill"></i></div>
+                    <h6 class="fw-extrabold mb-0 text-uppercase text-dark tracking-wider" style="font-size: 0.75rem;">Filter Architecture</h6>
+                </div>
+                
+                <form method="GET" action="" id="shopFilterEcosystemForm">
+                    <div class="mb-4">
+                        <label class="form-label small text-uppercase text-muted fw-bold mb-2" style="font-size: 0.65rem; letter-spacing: 0.5px;">Craft Category</label>
+                        <div class="filter-group d-flex flex-column gap-2">
+                            <label class="d-flex align-items-center gap-2.5 cursor-pointer">
+                                <input class="form-check-input accent-teal custom-shop-checkbox" type="checkbox" name="craft_type" value="woodwork" id="craft_wood">
+                                <span class="small fw-semibold text-secondary">Traditional Woodwork</span>
+                            </label>
+                            <label class="d-flex align-items-center gap-2.5 cursor-pointer">
+                                <input class="form-check-input accent-teal custom-shop-checkbox" type="checkbox" name="craft_type" value="canvas" id="craft_canvas">
+                                <span class="small fw-semibold text-secondary">Canvas Fine Art</span>
+                            </label>
+                            <label class="d-flex align-items-center gap-2.5 cursor-pointer">
+                                <input class="form-check-input accent-teal custom-shop-checkbox" type="checkbox" name="craft_type" value="pottery" id="craft_pottery">
+                                <span class="small fw-semibold text-secondary">Handmade Pottery</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4 border-light-subtle">
+                    
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <label class="fw-extrabold text-uppercase text-dark tracking-wider mb-0" style="font-size: 0.75rem;">Target Valuation</label>
+                            <span class="badge bg-info-subtle text-info font-monospace rounded-pill px-2.5 py-1 fw-extrabold" id="shopPriceDisplayLabel" style="font-size: 0.75rem;">৳5000</span>
+                        </div>
+                        <div class="d-flex justify-content-between text-muted extra-small mb-1 font-monospace" style="font-size: 0.65rem;">
+                            <span>৳0</span>
+                            <span>৳5000+</span>
+                        </div>
+                        <input type="range" class="form-range custom-shop-range-slider" min="0" max="5000" step="50" name="max_price" id="shopPriceRangeInput" value="5000">
+                    </div>
+
+                    <div class="d-flex flex-column gap-2 pt-2">
+                        <button type="submit" class="btn btn-info w-100 py-2.5 fw-bold rounded-pill text-white shadow-sm transition-all hover-lift">
+                            <i class="bi bi-filter me-1"></i>Apply Filter Settings
+                        </button>
+                        <button type="button" onclick="clearShopFilters()" class="btn btn-link w-100 text-decoration-none text-muted small fw-semibold custom-shop-reset">
+                            <i class="bi bi-arrow-counterclockwise me-1"></i>Reset System View
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-lg-9 col-md-8">
+            <div class="row g-4">
+                
+                {% if user.is_authenticated %}
+                    {% for item in user.creative_items.all %}
+                        {% if not item.is_approved %}
+                        <div class="col-xl-4 col-md-6 reveal-up" style="animation-delay: calc({{ forloop.counter0 }} * 0.05s);">
+                            <div class="card h-100 shadow-sm product-card border-dashed-warning bg-white opacity-85 position-relative">
+                                <div class="position-relative overflow-hidden rounded-top-4">
+                                    {% if item.image %}
+                                        <img src="{{ item.image.url }}" class="card-img-top img-fluid grayscale-blur" style="height: 220px; object-fit: cover;">
+                                    {% else %}
+                                        <img src="https://via.placeholder.com/500x350?text=Pending+Approval" class="card-img-top img-fluid grayscale-blur" style="height: 220px; object-fit: cover;">
+                                    {% endif %}
+                                    <div class="product-overlay">
+                                        <span class="badge bg-dark text-warning border border-warning fw-bold rounded-pill px-3 py-1.5 shadow-sm"><i class="bi bi-hourglass-split me-1"></i> Under Agent Review</span>
+                                    </div>
+                                </div>
+                                <div class="card-body text-center p-4">
+                                    <h6 class="fw-extrabold text-muted mb-2 text-truncate">{{ item.title }}</h6>
+                                    <span class="fs-5 fw-bold text-secondary">৳{{ item.price }}</span>
+                                    <div class="p-2 bg-light rounded-3 mt-3 border border-light-subtle">
+                                        <small class="text-warning fw-bold" style="font-size: 0.7rem;"><i class="bi bi-shield-exclamation me-1"></i>Awaiting verification check</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+                {% for item in items %}
+                <div class="col-xl-4 col-md-6 reveal-up" style="animation-delay: calc({{ forloop.counter0 }} * 0.05s);">
+                    <div class="card h-100 border-0 shadow-sm product-card bg-white">
+                        <div class="position-relative overflow-hidden rounded-top-4">
+                            {% if item.image %}
+                                <img src="{{ item.image.url }}" class="card-img-top img-fluid transition-scale" style="height: 220px; object-fit: cover;">
+                            {% else %}
+                                <img src="{% static 'marketplace/default.jpg' %}" class="card-img-top img-fluid transition-scale" alt="Default Portfolio Layout" style="height: 220px; object-fit: cover;">
+                            {% endif %}
+                            
+                            <div class="product-overlay">
+                                <span class="badge bg-white text-info border border-info fw-bold rounded-pill px-3 py-1.5 shadow-sm"><i class="bi bi-patch-check-fill me-1"></i> Verified Creator</span>
+                            </div>
+                        </div>
+                        <div class="card-body d-flex flex-column p-4 text-center">
+                            <h6 class="fw-extrabold text-dark mb-2 text-truncate" style="font-size: 0.95rem;">{{ item.title }}</h6>
+                            <div class="d-flex justify-content-center align-items-center mb-3 mt-auto">
+                                <span class="fs-5 fw-extrabold text-primary">৳{{ item.price }}</span>
+                            </div>
+                            <button onclick="addToCart('{{ item.id }}', '{{ item.title|escapejs }}', '{{ item.price }}')" 
+                                    class="btn btn-outline-info w-100 rounded-pill fw-bold btn-sm py-2.5 custom-shop-action">
+                                <i class="bi bi-cart-plus-fill me-1"></i> Claim Asset to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                    <div class="col-12 text-center py-5 reveal-up">
+                        <div class="d-inline-flex p-4 rounded-circle bg-light text-muted mb-3 fs-2"><i class="bi bi-box-seam"></i></div>
+                        <h4 class="text-secondary fw-bold">No Active Inventory Available</h4>
+                        <p class="text-muted small mx-auto" style="max-width:320px;">There are currently no approved artisan goods listed inside the catalog grid nodes.</p>
+                    </div>
+                {% endfor %}
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .product-card { 
+        border-radius: 16px !important; 
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
+    }
+    .product-card:hover { 
+        transform: translateY(-6px); 
+        box-shadow: 0 20px 35px rgba(0,0,0,0.06) !important; 
+    }
+    .transition-scale { 
+        transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); 
+    }
+    .product-card:hover .transition-scale { 
+        transform: scale(1.08); 
+    }
+    .grayscale-blur { 
+        filter: grayscale(80%) blur(1px); 
+        transition: transform 0.4s ease;
+    }
+    .border-dashed-warning { 
+        border: 2px dashed #ffc107 !important; 
+    }
+    .product-overlay { position: absolute; top: 12px; right: 12px; z-index: 3; }
+    .custom-shop-action {
+        border-width: 2px;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .custom-shop-action:hover {
+        background-color: #00d2d3 !important;
+        border-color: #00d2d3 !important;
+        color: white !important;
+        transform: scale(1.02);
+    }
+    .transition-all { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+    .hover-lift:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0,210,211,0.2) !important; }
+    .tracking-wider { letter-spacing: 0.5px; }
+    .fw-extrabold { font-weight: 800; }
+    .cursor-pointer { cursor: pointer; }
+    .accent-teal { accent-color: #00d2d3; }
+    .custom-shop-checkbox {
+        accent-color: #00d2d3;
+        width: 16px;
+        height: 16px;
+    }
+    .custom-shop-range-slider::-webkit-slider-thumb { background: #00d2d3 !important; }
+    .custom-shop-range-slider::-moz-range-thumb { background: #00d2d3 !important; }
+    .custom-shop-range-slider:focus { box-shadow: 0 0 0 4px rgba(0, 210, 211, 0.15) !important; }
+    .custom-shop-reset:hover { color: #dc3545 !important; }
+    .extra-small { font-size: 0.65rem; }
+</style>
+
+<script>
+    function addToCart(id, title, price) {
+        if (typeof isUserLoggedIn !== "undefined" && !isUserLoggedIn) {
+            window.location.href = "{% url 'login_view' %}"; 
+            return;
+        }
+
+        let cart = JSON.parse(localStorage.getItem('creative_cart')) || [];
+        const newItem = {
+            id: String(id),
+            title: String(title),
+            price: parseFloat(price)
+        };
+
+        cart.push(newItem);
+        localStorage.setItem('creative_cart', JSON.stringify(cart));
+
+        if (typeof updateCartUI === "function") {
+            updateCartUI();
+        }
+
+        const cartDrawer = new bootstrap.Offcanvas(document.getElementById('cartDrawer'));
+        cartDrawer.show();
+    }
+
+    function updateCartBadge() {
+        let cart = JSON.parse(localStorage.getItem('creative_cart')) || [];
+        let badge = document.getElementById('cart-count');
+        if (badge) {
+            badge.innerText = cart.length;
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const shopSlider = document.getElementById('shopPriceRangeInput');
+        const shopLabel = document.getElementById('shopPriceDisplayLabel');
+        const shopForm = document.getElementById('shopFilterEcosystemForm');
+
+        function syncPriceLabelValue() {
+            shopLabel.innerText = '৳' + shopSlider.value;
+        }
+        shopSlider.addEventListener('input', syncPriceLabelValue);
+
+        const shopUrlParams = new URLSearchParams(window.location.search);
+        const activeCraftTypes = shopUrlParams.getAll('craft_type');
+        activeCraftTypes.forEach(val => {
+            const matchBox = shopForm.querySelector(`input[name="craft_type"][value="${val}"]`);
+            if (matchBox) matchBox.checked = true;
+        });
+
+        const activeMaxPrice = shopUrlParams.get('max_price');
+        if (activeMaxPrice) {
+            shopSlider.value = activeMaxPrice;
+            syncPriceLabelValue();
+        } else {
+            syncPriceLabelValue();
+        }
+    });
+
+    /* FIXED: Changed 'def' to JavaScript 'function' syntax */
+    function clearShopFilters() {
+        window.location.href = window.location.pathname;
+    }
+</script>
+{% endblock %}

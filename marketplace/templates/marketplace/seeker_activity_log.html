@@ -1,0 +1,293 @@
+{% extends 'marketplace/base.html' %}
+{% block content %}
+<div class="container my-5 py-2">
+    <div class="row g-4">
+        
+        <!-- --- LEFT COLUMN: NAVIGATION ARCHITECTURE & MESSAGES --- -->
+        <div class="col-lg-4 col-md-5 reveal-left">
+            <!-- Context Activity Router Menu -->
+            <div class="list-group border-0 shadow-sm rounded-4 overflow-hidden mb-4 bg-white">
+                <a href="{% url 'seeker_activity_log' %}" class="list-group-item list-group-item-action py-3 active border-0 transition-all custom-log-nav" style="background-color: #2c3e50 !important;">
+                    <i class="bi bi-journal-text me-2 text-info"></i> Service Task Monitoring
+                </a>
+                <a href="{% url 'worker_proposals' %}" class="list-group-item list-group-item-action py-3 border-0 transition-all custom-log-nav">
+                    <i class="bi bi-send-fill me-2 text-primary"></i> My Sent Proposals (Worker Mode)
+                </a>
+                <a href="{% url 'seeker_dashboard' %}" class="list-group-item list-group-item-action py-3 border-0 transition-all custom-log-nav">
+                    <i class="bi bi-plus-circle-fill me-2 text-info"></i> Post New Service Task
+                </a>
+                <a href="{% url 'item_entry_view' %}" class="list-group-item list-group-item-action py-3 border-0 transition-all custom-log-nav">
+                    <i class="bi bi-shop-window me-2 text-success"></i> Sell in Creative Shop
+                </a>
+            </div>
+
+            <!-- Telemetry Message Feed Stream Container -->
+            <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+                <h6 class="fw-extrabold text-dark text-uppercase tracking-wider mb-3" style="font-size: 0.75rem;">
+                    <i class="bi bi-chat-left-text-fill me-2 text-info"></i>Recent Communication Node
+                </h6>
+                <div class="message-stream-box" style="max-height: 320px; overflow-y: auto;">
+                    {% for msg in recent_messages %}
+                    <div class="small border-bottom border-light-subtle pb-2 mb-2 custom-msg-row transition-all">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <strong class="text-primary">@{{ msg.sender.username }}</strong>
+                            <span class="text-muted font-monospace" style="font-size: 0.65rem;">{{ msg.timestamp|timesince }} ago</span>
+                        </div>
+                        <p class="text-secondary mb-0 text-truncate" style="font-size: 0.8rem;">{{ msg.content|truncatechars:40 }}</p>
+                    </div>
+                    {% empty %}
+                    <div class="text-center py-4 text-muted small">
+                        <i class="bi bi-chat-square-x text-light-subtle fs-3 d-block mb-1"></i>
+                        No active conversation streams.
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- --- RIGHT COLUMN: ACTIVE SERVICE MONITORING SYSTEM --- -->
+        <div class="col-lg-8 col-md-7">
+            
+            <!-- Timeline Section Header 1 -->
+            <div class="d-flex justify-content-between align-items-center mb-4 reveal-up">
+                <div>
+                    <h4 class="fw-extrabold text-dark mb-1">Service Task Monitoring</h4>
+                    <p class="text-muted small mb-0">Track pipeline lifecycles, release locks, or handle cancellation adjustments.</p>
+                </div>
+                <span class="badge rounded-pill bg-dark text-info px-3 py-2 fw-bold" style="font-size: 0.75rem;">{{ my_tasks.count }} Active Records</span>
+            </div>
+
+            <!-- SERVICE TASKS STAGE MAPPER -->
+            {% for task in my_tasks %}
+            <div class="card border-0 shadow-sm mb-4 rounded-4 custom-activity-card overflow-hidden bg-white reveal-up" style="animation-delay: calc({{ forloop.counter0 }} * 0.05s);">
+                <div class="row g-0 h-100">
+                    <!-- Color Metric Side Accent Bar Indicator -->
+                    <div class="col-auto h-auto" style="width: 6px; background-color: {% if task.status == 'open' %}#ffc107{% elif task.status == 'assigned' %}#0d6efd{% elif task.status == 'in_progress' %}#fd7e14{% else %}#198754{% endif %};"></div>
+                    
+                    <div class="col card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+                            <div>
+                                <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+                                    <span class="badge px-2.5 py-1.5 rounded-2 small fw-extrabold text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px; {% if task.status == 'open' %}background: rgba(255,193,7,0.12); color:#b58100;{% elif task.status == 'assigned' %}background: rgba(13,110,253,0.12); color:#0a58ca;{% elif task.status == 'in_progress' %}background: rgba(253,126,20,0.12); color:#c85f07;{% else %}background: rgba(25,135,84,0.12); color:#146c43;{% endif %}">
+                                        {{ task.get_status_display }}
+                                    </span>
+                                    <span class="badge px-2 py-1 bg-light text-secondary border rounded-2 text-uppercase" style="font-size: 0.6rem; font-weight: 700;">
+                                        {{ task.get_category_display }}
+                                    </span>
+                                    <small class="text-muted font-monospace"><i class="bi bi-calendar3 me-1"></i>{{ task.created_at|date:"M d, Y" }}</small>
+                                </div>
+                                
+                                <h4 class="fw-extrabold text-dark mb-2" style="font-size: 1.25rem;">{{ task.title }}</h4>
+                                
+                                <p class="text-muted mb-0 small d-flex align-items-center gap-1">
+                                    <i class="bi bi-person-badge text-primary"></i> 
+                                    Assigned Specialist: <strong class="text-dark">{% if task.assigned_to.username %}@{{ task.assigned_to.username }}{% else %}Awaiting Allocation Pipeline...{% endif %}</strong>
+                                </p>
+                            </div>
+
+                            <!-- Execution Management Actions -->
+                            <div class="text-md-end ms-auto ms-md-0">
+                                <div class="btn-group shadow-sm rounded-pill overflow-hidden border">
+                                    <a href="{% url 'view_proposals' task.id %}" class="btn btn-sm btn-white bg-white text-secondary px-3 custom-group-btn border-end">
+                                        <i class="bi bi-folder2-open me-1"></i> Audit File
+                                    </a>
+                                    
+                                    {% if task.category == 'tech' and task.status == 'assigned' or task.status == 'in_progress' %}
+                                        <a href="{% url 'complete_task' task.id %}" class="btn btn-sm btn-success px-3 custom-group-btn text-white">
+                                            <i class="bi bi-patch-check-fill me-1"></i> Release Vault
+                                        </a>
+                                    {% endif %}
+
+                                    {% if task.status == 'assigned' or task.status == 'in_progress' %}
+                                        <button type="button" class="btn btn-sm btn-danger px-3 custom-group-btn text-white" data-bs-toggle="modal" data-bs-target="#cancelModal{{ task.id }}">
+                                            <i class="bi bi-x-circle-fill me-1"></i> Cancel
+                                        </button>
+                                    {% endif %}
+                                </div>
+
+                                {% if task.status == 'completed' %}
+                                    <div class="mt-2 text-success small fw-extrabold text-uppercase tracking-wide" style="font-size: 0.65rem;">
+                                        <i class="bi bi-shield-fill-check me-1"></i> Payout Settlement Dispatched
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- LAYER 2: CONDITIONAL ON-SITE HANDSHAKE MONITOR -->
+                        {% if task.status == 'assigned' and task.secure_handshake_pin and task.category == 'labor' %}
+                        <div class="mt-4 p-3 border rounded-4 bg-light border-orange-dashed animate__animated animate__fadeIn">
+                            <div class="row align-items-center g-3">
+                                <div class="col-sm-9">
+                                    <h6 class="fw-extrabold text-dark mb-1 d-flex align-items-center gap-2" style="font-size: 0.9rem;">
+                                        <i class="bi bi-shield-lock-fill text-warning"></i> Geospatial Handshake Verification Token
+                                    </h6>
+                                    <p class="text-muted mb-0" style="font-size: 0.75rem; line-height: 1.4;">
+                                        When the physical provider arrives on location in the Uttara sector area, request their matching app verification node. Read this system key out loud to authorize account check-in.
+                                    </p>
+                                </div>
+                                <div class="col-sm-3 text-sm-end">
+                                    <div class="d-inline-block bg-dark text-warning font-monospace fw-extrabold fs-4 px-3 py-1.5 rounded-3 tracking-widest border border-warning shadow-sm">
+                                        {{ task.secure_handshake_pin }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- LAYER 3: REMOTE AUDITING STATUSES -->
+                        {% if task.status == 'assigned' and task.category == 'tech' %}
+                        <div class="mt-3 p-2 text-info rounded-3 small fw-bold text-center border" style="background: rgba(0, 210, 211, 0.05); border-color: rgba(0, 210, 211, 0.15) !important;">
+                            <i class="bi bi-laptop me-1"></i> Digital Delivery Target Active. Review structural pipeline components in the chat feed before clearing the escrow balance ledger.
+                        </div>
+                        {% endif %}
+
+                        {% if task.status == 'in_progress' and task.category == 'labor' %}
+                        <div class="mt-3 p-2 rounded-3 small fw-bold text-center border" style="background: rgba(253, 126, 20, 0.05); border-color: rgba(253, 126, 20, 0.15) !important; color: #fd7e14;">
+                            <i class="bi bi-unlock-fill me-1"></i> On-Site Operation Authorized &amp; Active. Client ledger allocation balance locked safely in escrow.
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- DYNAMIC SECURITY REFUND MODAL WINDOW -->
+            {% if task.status == 'assigned' or task.status == 'in_progress' %}
+            <div class="modal fade" id="cancelModal{{ task.id }}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content rounded-4 border-0 shadow-lg bg-white">
+                        <div class="modal-body p-4 text-center">
+                            <div class="d-inline-flex p-3 bg-danger-subtle text-danger rounded-circle mb-3 fs-3">
+                                <i class="bi bi-exclamation-triangle-fill"></i>
+                            </div>
+                            <h5 class="fw-extrabold text-dark mb-2">Cancel Assignment &amp; Rollback Escrow?</h5>
+                            <p class="text-muted small px-3" style="line-height: 1.5;">
+                                If the assigned operator breaks operational deadlines or falls short of check-in parameters, you can void this deployment contract. The locked sum of <strong class="text-dark">৳{{ task.budget }}</strong> will return to your live balance immediately.
+                            </p>
+                            <div class="d-flex flex-column gap-2 mt-4">
+                                <a href="{% url 'cancel_task' task.id %}" class="btn btn-danger rounded-pill py-2.5 fw-bold text-white shadow-sm transition-all hover-lift">
+                                    Void Contract &amp; Retrieve Funds
+                                </a>
+                                <button type="button" class="btn btn-light rounded-pill py-2.5 text-secondary fw-semibold border" data-bs-toggle="modal" data-bs-dismiss="modal">
+                                    Maintain Active Alignment
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            {% empty %}
+            <!-- Service Empty State Card -->
+            <div class="text-center py-5 bg-white rounded-4 border-dashed mb-5 reveal-up">
+                <div class="d-inline-flex p-4 rounded-circle bg-light text-muted mb-3 fs-2"><i class="bi bi-clipboard-x"></i></div>
+                <h5 class="fw-bold text-dark">No Active Service Tasks Located</h5>
+                <p class="text-muted small mx-auto" style="max-width: 280px;">Your account currently registers no deployed manual or digital labor entries inside the ecosystem ledger profiles.</p>
+            </div>
+            {% endfor %}
+
+            <!-- --- TIMELINE SECTION HEADER 2: CREATIVE CRAFTS --- -->
+            <div class="d-flex justify-content-between align-items-center mt-5 mb-4 reveal-up">
+                <div>
+                    <h4 class="fw-extrabold text-dark mb-1">Creative Shop Catalog Monitoring</h4>
+                    <p class="text-muted small mb-0">Trace verification statuses for custom art products posted across public galleries.</p>
+                </div>
+                <span class="badge rounded-pill bg-success px-3 py-2 fw-bold" style="font-size: 0.75rem;">{{ my_creative_items.count }} Catalog Listings</span>
+            </div>
+
+            <!-- SHOP MONITORS CATALOG MATRIX -->
+            <!-- SHOP MONITORS CATALOG MATRIX -->
+            <div class="row g-3">
+                {% for item in my_creative_items %}
+                <div class="col-md-6 reveal-up" style="animation-delay: calc({{ forloop.counter0 }} * 0.05s);">
+                    <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white border-light-subtle custom-activity-card">
+                        <div class="d-flex justify-content-between align-items-start mb-2 flex-wrap gap-2">
+                            <h6 class="fw-extrabold text-dark mb-0 text-truncate" style="max-width: 70%;">{{ item.title }}</h6>
+                            <span class="badge px-2.5 py-1.5 rounded-2 font-monospace text-uppercase" style="font-size: 0.6rem; {% if item.is_approved %}background: rgba(25,135,84,0.12); color:#146c43;{% else %}background: rgba(255,193,7,0.12); color:#b58100;{% endif %}">
+                                {% if item.is_approved %}<i class="bi bi-patch-check-fill me-1"></i>Public{% else %}<i class="bi bi-shield-exclamation me-1"></i>Auditing{% endif %}
+                            </span>
+                        </div>
+                        <p class="text-muted small mb-3" style="line-height: 1.5;">{{ item.description|truncatechars:60 }}</p>
+                        <div class="d-flex justify-content-between align-items-center mt-auto border-top border-light-subtle pt-2">
+                            <span class="fw-extrabold text-primary fs-5">৳{{ item.price }}</span>
+                            <small class="text-muted font-monospace" style="font-size: 0.7rem;"><i class="bi bi-clock me-1"></i>{{ item.created_at|date:"M d" }}</small>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <!-- Craft Empty State Card -->
+                <div class="col-12 reveal-up">
+                    <div class="text-center py-4 bg-white rounded-4 border-dashed">
+                        <p class="text-muted mb-0 small">No proprietary creative artisan assets currently listed inside the catalog matrix channels.</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+        </div> 
+    </div> 
+</div>
+
+<!-- --- DASHBOARD CONTROL SYSTEM STYLES --- -->
+<style>
+    /* Premium Hover Movement & Layout Transforms */
+    .custom-activity-card {
+        border: 1px solid #eef0f2 !important;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .custom-activity-card:hover {
+        transform: translateX(6px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.05) !important;
+        border-color: rgba(0, 210, 211, 0.25) !important;
+    }
+
+    /* Customized Sidebar Indent Animations */
+    .custom-log-nav {
+        color: #4b6584;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+    .list-group-item-action:hover:not(.active) {
+        background-color: rgba(0, 210, 211, 0.05) !important;
+        color: #00b8b9 !important;
+        padding-left: 1.5rem !important;
+    }
+
+    /* Clean Segmented Control Shifters */
+    .custom-group-btn {
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 0.45rem 0.85rem;
+        transition: all 0.2s ease;
+    }
+    .btn-group .btn-white:hover {
+        background-color: #fafbfc !important;
+        color: #2c3e50 !important;
+    }
+
+    /* Message Row Highlights */
+    .custom-msg-row {
+        padding: 6px;
+        border-radius: 6px;
+    }
+    .custom-msg-row:hover {
+        background-color: #fafbfc;
+    }
+
+    /* Custom Tiny Scrollbar for Messaging Vault */
+    .message-stream-box::-webkit-scrollbar { width: 4px; }
+    .message-stream-box::-webkit-scrollbar-track { background: #f1f2f6; }
+    .message-stream-box::-webkit-scrollbar-thumb { background: #ced4da; border-radius: 10px; }
+
+    /* Core Utility Classes */
+    .border-dashed { border: 2px dashed #dee2e6; }
+    .border-orange-dashed { border: 2px dashed #fd7e14 !important; }
+    .transition-all { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+    .hover-lift:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0, 210, 211, 0.2) !important; }
+    .fw-extrabold { font-weight: 800; }
+    .tracking-wider { letter-spacing: 0.5px; }
+    .tracking-widest { letter-spacing: 4px; }
+    .cursor-pointer { cursor: pointer; }
+    .accent-teal { accent-color: #00d2d3; }
+</style>
+{% endblock %}

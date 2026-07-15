@@ -1,0 +1,99 @@
+{% extends 'marketplace/base.html' %}
+{% block content %}
+
+<div class="container my-5 py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-6">
+            <!-- --- ELEVATED DISCLOSURE TRANSACTION CARD --- -->
+            <div class="card border-0 shadow-lg p-5 text-center bg-white rounded-5 reveal-up">
+                
+                <!-- Animated Success Badge Ring -->
+                <div class="mb-4 d-flex justify-content-center">
+                    <div class="success-disclosure-icon animate__animated animate__zoomIn">
+                        <i class="bi bi-person-check-fill"></i>
+                    </div>
+                </div>
+                
+                <h2 class="fw-extrabold text-dark mb-2">Match Finalized!</h2>
+                <p class="text-muted small px-3">
+                    You have officially accepted the system proposal submitted by specialist 
+                    <span class="badge bg-light text-dark border px-2 py-1 fw-bold">@{{ proposal.applicant.username }}</span>.
+                </p>
+                
+                <!-- Secure Contact Credential Drawer -->
+                <div class="bg-light p-4 rounded-4 my-4 text-start border border-light transition-all hover-lift">
+                    <span class="text-uppercase fw-bold text-primary d-block mb-3 tracking-wider" style="font-size: 0.65rem; letter-spacing: 1px;">
+                        <i class="bi bi-shield-lock-fill me-1"></i>Verified Worker Credentials:
+                    </span>
+                    
+                    <div class="d-flex align-items-center mb-3 p-2 bg-white rounded-3 border border-light">
+                        <div class="p-2 bg-primary-subtle text-primary rounded-3 me-3"><i class="bi bi-telephone-fill"></i></div>
+                        <div>
+                            <small class="text-muted d-block" style="font-size: 0.7rem; font-weight: 600;">VOICE COMM CHANNEL</small>
+                            <span class="fw-bold text-dark fs-5">{{ proposal.applicant.profile.phone|default:"+880 1XXX-XXXXXX" }}</span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center p-2 bg-white rounded-3 border border-light">
+                        <div class="p-2 bg-info-subtle text-info rounded-3 me-3"><i class="bi bi-envelope-fill"></i></div>
+                        <div>
+                            <small class="text-muted d-block" style="font-size: 0.7rem; font-weight: 600;">ROUTING EMAIL NODE</small>
+                            <span class="fw-bold text-dark break-word" style="font-size: 0.95rem;">{{ proposal.applicant.email }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Strategic Risk Guardrail Alert -->
+                <div class="p-3 mb-4 rounded-3 d-flex align-items-start text-start border" style="background: rgba(255, 193, 7, 0.05); border-color: rgba(255, 193, 7, 0.2) !important;">
+                    <i class="bi bi-exclamation-triangle-fill text-warning fs-5 me-3 mt-0.5"></i>
+                    <div>
+                        <span class="text-uppercase fw-bold text-dark d-block mb-1" style="font-size: 0.65rem; letter-spacing: 0.5px;">Ecosystem Escrow Protocol</span>
+                        <small class="text-secondary d-block" style="font-size: 0.75rem; line-height: 1.4;">
+                            <strong>Safety Check:</strong> Retain partial ledger authorization. Do not request an admin escrow release override until work parameters have been physically evaluated on-site inside the Uttara node sector.
+                        </small>
+                    </div>
+                </div>
+
+                <!-- Structural Control Router Links -->
+                <div class="d-grid">
+                    <a href="{% url 'login_success' %}" class="btn btn-info py-3 rounded-pill fw-bold text-white shadow-sm transition-all hover-lift">
+                        <i class="bi bi-speedometer2 me-2"></i>Return to Operator Dashboard
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- --- DISCLOSURE NODE INTERFACE STYLES --- -->
+<style>
+    /* Premium Vector Elements */
+    .success-disclosure-icon {
+        width: 85px;
+        height: 85px;
+        background: rgba(0, 210, 211, 0.1);
+        color: #00d2d3;
+        font-size: 3.2rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: subtlePulse 3s infinite ease-in-out;
+        border: 2px dashed rgba(0, 210, 211, 0.4);
+    }
+
+    @keyframes subtlePulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.03); }
+    }
+
+    /* Core Micro-Movement Properties */
+    .transition-all { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+    .hover-lift:hover { transform: translateY(-4px); box-shadow: 0 12px 25px rgba(0,0,0,0.05) !important; }
+    .tracking-wider { letter-spacing: 0.5px; }
+    .fw-extrabold { font-weight: 800; }
+    .break-word { word-break: break-all; }
+</style>
+
+{% endblock %}

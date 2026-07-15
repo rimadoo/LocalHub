@@ -1,0 +1,92 @@
+{% extends 'marketplace/base.html' %}
+{% block content %}
+
+<div class="container my-5 py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-6">
+            <!-- --- ELEVATED SYSTEM BROADCAST CONFIRMATION CARD --- -->
+            <div class="card border-0 shadow-lg p-5 text-center bg-white rounded-5 reveal-up">
+                
+                <!-- Glowing Signal Broadcast Vector Circle -->
+                <div class="mb-4 d-flex justify-content-center">
+                    <div class="broadcast-pulse-wrapper">
+                        <i class="bi bi-broadcast"></i>
+                    </div>
+                </div>
+                
+                <h2 class="fw-extrabold text-dark mb-2">Broadcasting Your Need...</h2>
+                <p class="text-muted small px-2 mb-4">
+                    The task requirement <strong class="text-dark">"{{ task.title|default:'System Task Entry' }}"</strong> has been successfully initialized. Automated data pipelines have triggered real-time SMS alerts to verified <span class="badge bg-light text-primary border px-2 py-1 fw-bold">{{ task.get_category_display|default:'Specialist' }}</span> operators mapped near the Uttara sector node.
+                </p>
+                
+                <!-- Telemetry Artery Signal Indicators -->
+                <div class="row g-3 mb-4">
+                    <div class="col-6">
+                        <div class="p-3 border border-light-subtle rounded-4 bg-light d-flex align-items-center justify-content-center gap-2 shadow-sm">
+                            <span class="indicator-dot bg-success animate__animated animate__pulse animate__infinite"></span>
+                            <span class="fw-extrabold tracking-wider text-secondary uppercase" style="font-size: 0.65rem;">SMS GATEWAY: ONLINE</span>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-3 border border-light-subtle rounded-4 bg-light d-flex align-items-center justify-content-center gap-2 shadow-sm">
+                            <span class="indicator-dot bg-info"></span>
+                            <span class="fw-extrabold tracking-wider text-secondary uppercase" style="font-size: 0.65rem;">VISIBILITY: ENTIRE ECOSYSTEM</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Strategic Dashboard Navigation Routers -->
+                <div class="d-flex flex-column gap-2">
+                    <a href="{% url 'daily_labor' %}" class="btn btn-info py-3 rounded-pill fw-bold text-white shadow-sm transition-all hover-lift">
+                        <i class="bi bi-eye-fill me-2"></i>Monitor My Active Listing
+                    </a>
+                    <a href="{% url 'login_success' %}" class="btn btn-outline-secondary py-2.5 rounded-pill transition-all hover-lift" style="font-weight: 600;">
+                        <i class="bi bi-speedometer2 me-2"></i>Return to User Hub
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- --- BROADCAST INTERACTIVE EFFECTS CANVAS --- -->
+<style>
+    /* Premium Pulse and Vector Glow Rings */
+    .broadcast-pulse-wrapper {
+        width: 90px;
+        height: 90px;
+        background: rgba(0, 210, 211, 0.08);
+        color: #00d2d3;
+        font-size: 3.2rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid rgba(0, 210, 211, 0.2);
+        animation: telemetryPulse 2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+    }
+
+    @keyframes telemetryPulse {
+        0% { transform: scale(0.92); box-shadow: 0 0 0 0 rgba(0, 210, 211, 0.5); }
+        70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(0, 210, 211, 0); }
+        100% { transform: scale(0.92); box-shadow: 0 0 0 0 rgba(0, 210, 211, 0); }
+    }
+
+    /* System Indicator Metric Dots */
+    .indicator-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        display: inline-block;
+    }
+
+    /* Core Micro-Movement Properties */
+    .transition-all { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+    .hover-lift:hover { transform: translateY(-4px); box-shadow: 0 12px 25px rgba(0, 210, 211, 0.25) !important; }
+    .tracking-wider { letter-spacing: 0.5px; }
+    .fw-extrabold { font-weight: 800; }
+    .uppercase { text-transform: uppercase; }
+</style>
+
+{% endblock %}

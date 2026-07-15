@@ -1,0 +1,206 @@
+{% extends 'marketplace/base.html' %}
+{% block content %}
+<div class="container my-5 py-2">
+    
+    <!-- --- INTERACTIVE TECH HUB BANNER --- -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-5 p-4 rounded-4 shadow-sm bg-white border-start border-info border-5 reveal-up">
+        <div>
+            <span class="text-uppercase text-primary fw-bold small tracking-wider" style="letter-spacing: 1px;">Remote Digital Contracts</span>
+            <h2 class="fw-extrabold text-dark mb-1 mt-1">🚀 Tech Task Marketplace</h2>
+            <p class="text-muted mb-0 small">Fulfill high-end digital tasks, optimize scripts, and engineer web platforms under secure project escrow parameters.</p>
+        </div>
+        <a href="{% url 'seeker_dashboard' %}" class="btn btn-info px-4 py-3 fw-bold rounded-pill shadow-sm text-white transition-all hover-lift w-100 w-sm-auto">
+            <i class="bi bi-plus-circle-fill me-2"></i>Post a Tech Need
+        </a>
+    </div>
+
+    <div class="row g-4">
+        <!-- --- LEFT SIDEBAR: TECH CATEGORIES & AUDIT FILTERS --- -->
+        <div class="col-lg-3 col-md-4 reveal-left">
+            <div class="card border-0 shadow-sm p-4 sticky-top rounded-4 bg-white" style="top: 100px; z-index: 5;">
+                
+                <div class="d-flex align-items-center mb-3">
+                    <div class="p-2 bg-light rounded-3 text-info me-2 border border-light-subtle" style="font-size: 0.85rem;"><i class="bi bi-funnel-fill"></i></div>
+                    <h6 class="fw-extrabold text-uppercase text-dark tracking-wider mb-0" style="font-size: 0.75rem;">Categories</h6>
+                </div>
+                
+                <!-- HTML Filter form targeting the tech url matrix -->
+                <form method="GET" action="" id="techFilterForm">
+                    <div class="list-group list-group-flush small mb-3">
+                        
+                        <label class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 py-2 bg-transparent cursor-pointer">
+                            <div class="d-flex align-items-center gap-2">
+                                <input class="form-check-input accent-teal tech-filter-checkbox" type="checkbox" name="tech_category" value="web" id="tech_web">
+                                <span class="fw-semibold text-secondary">Web Development</span>
+                            </div>
+                        </label>
+
+                        <label class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 py-2 bg-transparent cursor-pointer">
+                            <div class="d-flex align-items-center gap-2">
+                                <input class="form-check-input accent-teal tech-filter-checkbox" type="checkbox" name="tech_category" value="vfx" id="tech_vfx">
+                                <span class="fw-semibold text-secondary">VFX &amp; Animation</span>
+                            </div>
+                        </label>
+
+                        <label class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 py-2 bg-transparent cursor-pointer">
+                            <div class="d-flex align-items-center gap-2">
+                                <input class="form-check-input accent-teal tech-filter-checkbox" type="checkbox" name="tech_category" value="python" id="tech_python">
+                                <span class="fw-semibold text-secondary">Python Scripting</span>
+                            </div>
+                        </label>
+                        
+                    </div>
+                    
+                    <hr class="my-4 border-light-subtle">
+                    
+                    <h6 class="fw-extrabold mb-3 text-uppercase text-dark tracking-wider" style="font-size: 0.75rem;">Escrow Protection</h6>
+                    <div class="form-check custom-checkbox mb-4">
+                        <input class="form-check-input accent-teal" type="checkbox" name="escrow_locked" value="true" id="verified_escrow">
+                        <label class="form-check-label small fw-bold text-secondary cursor-pointer" for="verified_escrow">
+                            <i class="bi bi-shield-check text-success me-1"></i> Budget Pre-locked
+                        </label>
+                    </div>
+
+                    <!-- Filter Control Buttons -->
+                    <div class="d-flex flex-column gap-2">
+                        <button type="submit" class="btn btn-info w-100 py-2 fw-bold rounded-pill text-white shadow-sm transition-all hover-lift small" style="font-size: 0.8rem;">
+                            Apply Filters
+                        </button>
+                        <button type="button" onclick="resetTechFilters()" class="btn btn-link w-100 text-decoration-none text-muted small fw-semibold pt-1" style="font-size: 0.75rem;">
+                            <i class="bi bi-arrow-counterclockwise me-1"></i>Reset Framework
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- --- RIGHT SIDE: ACTIVE OPPORTUNITIES STREAM --- -->
+        <div class="col-lg-9 col-md-8">
+            {% for task in tasks %}
+            <!-- Premium Remote Task Card -->
+            <div class="card border-0 shadow-sm mb-4 task-premium-card bg-white reveal-up" style="animation-delay: calc({{ forloop.counter0 }} * 0.05s);">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
+                        <div>
+                            <!-- Dynamic Structural Category Badges -->
+                            <span class="badge px-3 py-1.5 rounded-pill small fw-extrabold text-uppercase mb-2 d-inline-block" style="font-size: 0.65rem; letter-spacing: 0.5px; {% if task.budget > 100 %}background: rgba(0, 210, 211, 0.1); color: #00b8b9;{% else %}background: rgba(46, 204, 113, 0.1); color: #27ae60;{% endif %}">
+                                {% if task.budget > 100 %}<i class="bi bi-cpu-fill me-1"></i>Complex Contract{% else %}<i class="bi bi-lightning-fill me-1"></i>Fixed Scope{% endif %}
+                            </span>
+                            
+                            <h4 class="fw-extrabold text-dark mb-2" style="font-size: 1.3rem;">{{ task.title }}</h4>
+                            
+                            <p class="text-muted small mb-0 fw-medium d-flex flex-wrap align-items-center gap-2">
+                                <span>Posted by: <strong class="text-primary">@{{ task.posted_by.username }}</strong></span>
+                                <span class="text-light-subtle">|</span>
+                                <span><i class="bi bi-geo-alt-fill text-danger me-1"></i>{{ task.location }}</span>
+                                <span class="text-light-subtle">|</span>
+                                <span><i class="bi bi-clock-history me-1"></i>{{ task.created_at|timesince }} ago</span>
+                            </p>
+                        </div>
+                        
+                        <div class="text-md-end ms-auto ms-md-0">
+                            <h3 class="fw-extrabold text-dark mb-0">৳{{ task.budget }}</h3>
+                            <small class="text-muted fw-semibold text-uppercase tracking-wider d-block mt-1" style="font-size: 0.6rem;">Est. Allocation</small>
+                        </div>
+                    </div>
+                    
+                    <p class="text-secondary small mb-4" style="line-height: 1.6;">
+                        {{ task.description|truncatewords:40 }}
+                    </p>
+                    
+                    <!-- Footer Interaction Rows -->
+                    <div class="d-flex justify-content-between align-items-center border-top border-light-subtle pt-3">
+                        <small class="text-muted fw-medium">
+                            <i class="bi bi-people-fill text-secondary me-1"></i>Active Proposals: <strong class="text-dark">{{ task.applications.count }}</strong>
+                        </small>
+                        <a href="{% url 'submit_tech_proposal' task.id %}" class="btn btn-outline-info px-4 rounded-pill fw-bold btn-sm py-2 custom-tech-action">
+                            Submit a Proposal <i class="bi bi-chevron-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <!-- System Empty State Trigger -->
+            <div class="text-center py-5 bg-white shadow-sm rounded-4 border border-light-subtle reveal-up">
+                <div class="d-inline-flex p-4 rounded-circle bg-light text-muted mb-3 fs-1">
+                    <i class="bi bi-terminal-x"></i>
+                </div>
+                <h4 class="text-secondary fw-bold">No Active Tech Contracts Available</h4>
+                <p class="text-muted small mx-auto mb-3" style="max-width:340px;">There are currently no engineering mandates or Python pipeline tasks listed inside the registry nodes.</p>
+                <a href="{% url 'seeker_dashboard' %}" class="btn btn-info text-white btn-sm rounded-pill px-4 py-2 fw-bold shadow-sm transition-all hover-lift">Initialize Digital Need</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<!-- --- AUTO-RETAIN STATE ENGINE SCRIPTS --- -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const techForm = document.getElementById('techFilterForm');
+        const urlParams = new URLSearchParams(window.location.search);
+
+        # 1. Read URL and auto-check active checkboxes on page load
+        const checkedCategories = urlParams.getAll('tech_category');
+        checkedCategories.forEach(val => {
+            const checkbox = techForm.querySelector(`input[name="tech_category"][value="${val}"]`);
+            if (checkbox) checkbox.checked = true;
+        });
+
+        # 2. Auto-check the escrow checkbox if it was active
+        if (urlParams.get('escrow_locked') === 'true') {
+            document.getElementById('verified_escrow').checked = true;
+        }
+    });
+
+    # 3. Wipe filters clean and refresh
+    function resetTechFilters() {
+        window.location.href = window.location.pathname;
+    }
+</script>
+
+<!-- --- DIGITAL MARKETPLACE CUSTOM PROPERTIES --- -->
+<style>
+    /* Premium Hover Movement & Border Glow Engines */
+    .task-premium-card {
+        border-radius: 16px;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        border: 1px solid #eef0f2 !important;
+    }
+    .task-premium-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.06) !important;
+        border-color: rgba(0, 210, 211, 0.25) !important;
+    }
+
+    /* Interactive Action Buttons */
+    .custom-tech-action {
+        border-width: 2px;
+        color: #00b8b9;
+        border-color: #00d2d3;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .custom-tech-action:hover {
+        background-color: #00d2d3 !important;
+        border-color: #00d2d3 !important;
+        color: white !important;
+        transform: scale(1.02);
+    }
+
+    /* Sidebar Interaction Elements */
+    .custom-filter-link {
+        transition: all 0.3s ease;
+    }
+    .custom-filter-link:hover {
+        color: #00b8b9 !important;
+        padding-left: 6px;
+    }
+
+    /* Core Micro-Movement Properties */
+    .transition-all { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+    .hover-lift:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0,210,211,0.2) !important; }
+    .tracking-wider { letter-spacing: 0.5px; }
+    .fw-extrabold { font-weight: 800; }
+    .cursor-pointer { cursor: pointer; }
+    .accent-teal { accent-color: #00d2d3; }
+</style>
+{% endblock %}

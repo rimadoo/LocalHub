@@ -1,0 +1,151 @@
+{% extends 'marketplace/base.html' %}
+{% block content %}
+
+<div class="container my-5 py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-6">
+            <!-- --- ELEVATED COMMERCIAL SUCCESS RECEIPT CARD --- -->
+            <div class="card border-0 shadow-lg p-5 text-center bg-white rounded-5 reveal-up printable-receipt-node">
+                
+                <!-- Animated Handoff Logistics Badge -->
+                <div class="mb-4 d-flex justify-content-center no-print">
+                    <div class="success-package-icon animate__animated animate__zoomIn">
+                        <i class="bi bi-box-seam-fill"></i>
+                    </div>
+                </div>
+                
+                <!-- Print-Only Premium Document Header Header -->
+                <div class="d-none print-only-header text-start border-bottom pb-3 mb-4">
+                    <h3 class="fw-extrabold text-dark tracking-wider mb-1">LOCAL<span class="text-info">HUB</span> RECEIPT</h3>
+                    <small class="text-muted d-block">Automated C2C Artisan Distribution Ledger</small>
+                    <small class="text-muted d-block">Transaction Timestamp: {% now "Y-m-d H:i:s" %}</small>
+                </div>
+                
+                <h2 class="fw-extrabold text-dark mb-2">Order Confirmed!</h2>
+                <p class="text-muted small px-3 mb-4">
+                    Thank you, <strong class="text-dark">{{ user.first_name|default:user.username }}</strong>. Your local artisan craft order record has been logged and is being prepared for localized dispatch within the **Uttara Sector Grid**.
+                </p>
+                
+                <!-- Invoice Tracking Specification Block -->
+                <div class="bg-light p-4 rounded-4 mb-4 text-start border border-light-subtle">
+                    <span class="text-uppercase fw-bold text-primary d-block mb-3 tracking-wider" style="font-size: 0.65rem; letter-spacing: 1px;">
+                        <i class="bi bi-receipt-cutoff me-1"></i>Manifest Tracking Parameters:
+                    </span>
+                    
+                    <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom border-white" style="font-size: 0.85rem;">
+                        <span class="text-secondary fw-semibold">Settlement Status:</span>
+                        <span class="badge bg-info-subtle text-info text-uppercase fw-bold rounded-pill px-3 py-1" style="font-size: 0.65rem; letter-spacing: 0.5px;">Processing Log</span>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between align-items-center mb-0" style="font-size: 0.85rem;">
+                        <span class="text-secondary fw-semibold">Estimated Fulfillment:</span>
+                        <span class="fw-bold text-dark"><i class="bi bi-truck text-muted me-1"></i>24 - 48 Hours Target</span>
+                    </div>
+                </div>
+
+                <!-- Strategic Interface Flow Button Layout -->
+                <div class="d-flex flex-column gap-2">
+                    <a href="{% url 'creative_shop' %}" class="btn btn-info py-3 rounded-pill fw-bold text-white shadow-sm transition-all hover-lift no-print">
+                        <i class="bi bi-bag-heart-fill me-2"></i>Continue Shopping
+                    </a>
+                    
+                    <button onclick="window.print()" class="btn btn-outline-secondary py-2.5 rounded-pill transition-all hover-lift fw-bold no-print">
+                        <i class="bi bi-printer-fill me-2"></i>Print Invoice Receipt
+                    </button>
+
+                    <a href="{% url 'login_success' %}" class="btn btn-link text-muted text-decoration-none small fw-semibold mt-1 no-print">
+                        <i class="bi bi-speedometer2 me-1"></i>Return to User Hub
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- --- INVOICING MEDIA LAYOUT AND ANIMATION PROPERTIES --- -->
+<style>
+    /* Premium Vector Elements */
+    .success-package-icon {
+        width: 90px;
+        height: 90px;
+        background: rgba(0, 210, 211, 0.08);
+        color: #00d2d3;
+        font-size: 3.5rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: boxFloat 3s infinite ease-in-out;
+        border: 2px dashed rgba(0, 210, 211, 0.3);
+    }
+
+    @keyframes boxFloat {
+        0%, 100% { transform: translateY(0) scale(1); }
+        50% { transform: translateY(-6px) scale(1.02); box-shadow: 0 15px 25px rgba(0, 210, 211, 0.1); }
+    }
+
+    /* Core Micro-Movement Properties */
+    .transition-all { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+    .hover-lift:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0, 210, 211, 0.2) !important; }
+    .tracking-wider { letter-spacing: 0.5px; }
+    .fw-extrabold { font-weight: 800; }
+
+    /* ─── HARD PRINT MEDIA ISOLATION RULES ─── */
+    @media print {
+        /* Strip platform noise completely */
+        .no-print, nav, footer, .navbar, .btn, .success-package-icon {
+            display: none !important;
+        }
+        body {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+        }
+        .container {
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+        .printable-receipt-node {
+            box-shadow: none !important;
+            border: 2px solid #2c3e50 !important;
+            padding: 2.5rem !important;
+            border-radius: 12px !important;
+            background: #ffffff !important;
+            margin: 0 auto !important;
+        }
+        .print-only-header {
+            display: block !important;
+        }
+        .bg-light {
+            background-color: #f8f9fa !important;
+            border: 1px solid #dee2e6 !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+    }
+</style>
+
+<script>
+    // CRITICAL RECOVERY FLOW: Evaporate temporary item storage arrays upon final checkout arrival
+    document.addEventListener('DOMContentLoaded', function() {
+        // Purge client data blocks
+        localStorage.removeItem('creative_cart');
+        
+        // Push standard structural handshake updates to primary navbar count badge anchors
+        const countBadge = document.getElementById('cart-count');
+        if (countBadge) {
+            countBadge.innerText = '0';
+        }
+        
+        // Sync secondary dynamic template badge triggers safely if active
+        const summaryBadge = document.getElementById('cart-count-badge');
+        if (summaryBadge) {
+            summaryBadge.innerText = '0';
+        }
+        
+        console.log("Telemetry Alert: Transaction checkout verified. Local storage arrays cleared safely.");
+    });
+</script>
+{% endblock %}

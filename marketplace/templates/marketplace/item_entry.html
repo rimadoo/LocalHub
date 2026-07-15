@@ -1,0 +1,166 @@
+{% extends 'marketplace/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- --- INTUITIVE UPLOAD HERO --- -->
+<section class="position-relative overflow-hidden" style="background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%); padding: 60px 0; border-bottom: 4px solid #00d2d3;">
+    <!-- Glassmorphic Light Injectors -->
+    <div class="position-absolute" style="top: -30%; right: -10%; width: 300px; height: 300px; background: rgba(0, 210, 211, 0.1); border-radius: 50%; filter: blur(60px); pointer-events: none;"></div>
+    
+    <div class="container position-relative z-3 text-center">
+        <span class="badge bg-soft-info text-uppercase text-info fw-bold px-3 py-2 mb-3 animate__animated animate__fadeInDown" style="background: rgba(0,210,211,0.15); font-size: 0.75rem; letter-spacing: 1px;">
+            <i class="bi bi-cloud-arrow-up-fill me-2"></i>Artisan Ledger Registry
+        </span>
+        <h1 class="display-5 fw-extrabold text-white mb-2 animate__animated animate__fadeInUp">
+            List Your Creative Work
+        </h1>
+        <p class="lead text-white-50 mx-auto mb-0 animate__animated animate__fadeInUp animate__delay-1s" style="max-width: 600px; font-weight: 400; font-size: 0.95rem;">
+            Register your handmade items, canvas art, or custom crafts into the decentralized gallery network. 
+        </p>
+    </div>
+</section>
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-7">
+            <!-- --- ELEVATED UPLOAD CARD --- -->
+            <div class="card border-0 shadow-lg p-0 bg-white rounded-4 overflow-hidden reveal-up">
+                
+                <!-- System Verification Guardrail Banner -->
+                <div class="p-4 text-white text-center" style="background: #2c3e50; border-bottom: 3px solid #00d2d3;">
+                    <div class="d-inline-flex p-2.5 rounded-circle mb-2" style="background: rgba(0, 210, 211, 0.1); color: #00d2d3;">
+                        <i class="bi bi-palette2 fs-4"></i>
+                    </div>
+                    <h5 class="fw-extrabold mb-1" style="font-size: 1.1rem; letter-spacing: 0.5px;">Artisan Catalog Registration</h5>
+                    <small class="text-white-50">All items undergo verification auditing before listing on global gallery feeds.</small>
+                </div>
+
+                <div class="card-body p-5 bg-white">
+                    <form method="POST" action="{% url 'add_creative_item' %}" enctype="multipart/form-data" id="artisan-upload-form">
+                        {% csrf_token %}
+                        
+                        <!-- Row Stream: Title & Price -->
+                        <div class="row g-4 mb-4">
+                            <div class="col-md-8">
+                                <label class="form-label small fw-bold text-secondary tracking-wide mb-2">
+                                    <i class="bi bi-bookmark-star-fill text-primary me-1"></i>Item Title
+                                </label>
+                                <input type="text" name="title" class="form-control rounded-3 custom-entry-input" placeholder="e.g. Hand-Carved Teak Vase" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold text-secondary tracking-wide mb-2">
+                                    <i class="bi bi-currency-bangla text-success me-1"></i>Price Target (৳)
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light text-muted border-end-0 fw-bold small">৳</span>
+                                    <input type="number" name="price" step="0.01" class="form-control rounded-end-3 custom-entry-input border-start-0" placeholder="0.00" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Interactive File Input Layer -->
+                        <div class="mb-4">
+                            <label class="form-label small fw-bold text-secondary tracking-wide mb-2">
+                                <i class="bi bi-image-fill text-info me-1"></i>Portfolio Image Showcase
+                            </label>
+                            <div class="custom-file-drop p-4 rounded-4 text-center border-dashed position-relative transition-all">
+                                <input type="file" name="item_image" id="item_image_input" class="position-absolute top-0 start-0 w-100 h-100 opacity-0 cursor-pointer" accept="image/*" required>
+                                <div class="file-drop-view">
+                                    <i class="bi bi-images text-muted display-6 d-block mb-2"></i>
+                                    <span class="d-block small fw-bold text-dark mb-1" id="file-name-display">Click to choose image or drag file here</span>
+                                    <span class="text-muted" style="font-size: 0.65rem;">Supports: PNG, JPG, JPEG (Max resolution checked dynamically)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Text Description Box -->
+                        <div class="mb-4">
+                            <label class="form-label small fw-bold text-secondary tracking-wide mb-2">
+                                <i class="bi bi-file-earmark-text-fill text-secondary me-1"></i>Product Story &amp; Specifications
+                            </label>
+                            <textarea name="description" class="form-control rounded-4 custom-entry-input p-3" rows="4" placeholder="Detail the specific materials, dimension vectors, or crafting process applied..." required></textarea>
+                        </div>
+
+                        <!-- Platform System Compliance Warning -->
+                        <div class="p-3 mb-4 rounded-3 d-flex align-items-start border" style="background: rgba(0, 210, 211, 0.03); border-color: rgba(0, 210, 211, 0.12) !important;">
+                            <i class="bi bi-shield-fill-exclamation text-info fs-5 me-3 mt-0.5"></i>
+                            <div>
+                                <span class="text-uppercase fw-bold text-dark d-block mb-1" style="font-size: 0.6rem; letter-spacing: 0.5px;">Ecosystem Integrity Check</span>
+                                <small class="text-secondary d-block" style="font-size: 0.7rem; line-height: 1.4;">
+                                    <strong>Listing Policy:</strong> Uploading distorted, explicit, or un-owned imagery triggers automatic account locks. Content must stay compliant with the local Uttara node provider protocols.
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- Submission Interactive Trigger Button -->
+                        <button type="submit" class="btn btn-info w-100 py-3 rounded-pill fw-bold text-white shadow-sm transition-all hover-lift">
+                            <i class="bi bi-check2-circle me-2"></i>Publish to Auditing Pipeline
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- --- ENTRY UI SYSTEM INTERACTION STYLES --- -->
+<style>
+    /* Premium Input Interaction Layers */
+    .custom-entry-input {
+        border: 1px solid #ced4da;
+        font-size: 0.9rem;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        background-color: #fafbfc;
+        padding: 0.65rem 1rem;
+    }
+    .custom-entry-input:focus {
+        border-color: #00d2d3 !important;
+        box-shadow: 0 0 0 4px rgba(0, 210, 211, 0.15) !important;
+        background-color: #ffffff;
+    }
+
+    /* Modernized Dropzone Area File Wrappers */
+    .custom-file-drop {
+        border: 2px dashed #ced4da;
+        background-color: #fafbfc;
+        cursor: pointer;
+    }
+    .custom-file-drop:hover, .custom-file-drop:focus-within {
+        border-color: #00d2d3;
+        background-color: rgba(0, 210, 211, 0.02);
+    }
+    .custom-file-drop:hover .bi-images {
+        color: #00d2d3 !important;
+        transform: scale(1.1);
+        transition: transform 0.3s ease;
+    }
+
+    /* Core Micro-Movement Properties */
+    .transition-all { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+    .hover-lift:hover { transform: translateY(-4px); box-shadow: 0 12px 25px rgba(0, 210, 211, 0.2) !important; }
+    .tracking-wider { letter-spacing: 1px; }
+    .fw-extrabold { font-weight: 800; }
+    .cursor-pointer { cursor: pointer; }
+</style>
+
+<script>
+    // Modern UX Fix: Real-time File-Selection Input Display Node listener
+    document.addEventListener('DOMContentLoaded', function() {
+        const fileInput = document.getElementById('item_image_input');
+        const nameDisplay = document.getElementById('file-name-display');
+        
+        if (fileInput && nameDisplay) {
+            fileInput.addEventListener('change', function(e) {
+                if (this.files && this.files.length > 0) {
+                    nameDisplay.innerHTML = `<i class="bi bi-file-earmark-check text-success me-1"></i> Selected: <span class="text-primary">${this.files[0].name}</span>`;
+                } else {
+                    nameDisplay.innerText = "Click to choose image or drag file here";
+                }
+            });
+        }
+    });
+</script>
+
+{% endblock %}

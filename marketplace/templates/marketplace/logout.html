@@ -1,0 +1,79 @@
+{% extends 'marketplace/base.html' %}
+{% block content %}
+
+<div class="container my-5 py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <!-- --- ELEVATED SESSION TERMINATION CARD --- -->
+            <div class="card border-0 shadow-lg p-5 rounded-4 text-center bg-white reveal-up">
+                
+                <!-- Animated Exit Vector Badge -->
+                <div class="mb-4 d-flex justify-content-center">
+                    <div class="logout-icon-wrap">
+                        <i class="bi bi-box-arrow-right"></i>
+                    </div>
+                </div>
+                
+                <h2 class="fw-extrabold text-dark mb-2">Logged Out Securely</h2>
+                <p class="text-muted small px-3 mb-4">
+                    Thank you for utilizing **LocalHub**. Your platform session parameters have been securely ended and cleared from the active database token streams.
+                </p>
+                
+                <!-- Security Clearance Status Box -->
+                <div class="p-3 mb-4 rounded-3 d-flex align-items-center text-start border" style="background: rgba(44, 62, 80, 0.03); border-color: rgba(44, 62, 80, 0.08) !important;">
+                    <i class="bi bi-shield-check text-success fs-4 me-3"></i>
+                    <div>
+                        <span class="text-uppercase fw-bold text-dark d-block mb-0.5" style="font-size: 0.65rem; letter-spacing: 0.5px;">Session Terminated</span>
+                        <small class="text-secondary d-block" style="font-size: 0.7rem; line-height: 1.3;">
+                            Your escrow balances and user credential states have been safely cached and locked.
+                        </small>
+                    </div>
+                </div>
+
+                <!-- Router Navigation Redirect Links -->
+                <div class="d-flex flex-column gap-2">
+                    <a href="{% url 'login_view' %}" class="btn btn-info py-2.5 rounded-pill fw-bold text-white shadow-sm transition-all hover-lift">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>Sign In Again
+                    </a>
+                    <a href="{% url 'home' %}" class="btn btn-outline-secondary py-2.5 rounded-pill transition-all hover-lift" style="font-weight: 600;">
+                        <i class="bi bi-house-door me-2"></i>Back to Home Screen
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- --- LOGOUT INTERACTIVE STYLES --- -->
+<style>
+    /* Premium Vector Elements */
+    .logout-icon-wrap {
+        width: 80px;
+        height: 80px;
+        background: rgba(44, 62, 80, 0.05);
+        color: #2c3e50;
+        font-size: 3rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px dashed rgba(44, 62, 80, 0.2);
+        animation: waveHand 2s ease-in-out infinite;
+    }
+
+    /* Soft micro-interaction tilt modeling a waving exit sign */
+    @keyframes waveHand {
+        0%, 100% { transform: rotate(0deg); }
+        25% { transform: rotate(-8deg); }
+        75% { transform: rotate(8deg); }
+    }
+
+    /* Core Micro-Movement Properties */
+    .transition-all { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+    .hover-lift:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.06) !important; }
+    .tracking-wider { letter-spacing: 0.5px; }
+    .fw-extrabold { font-weight: 800; }
+</style>
+
+{% endblock %}

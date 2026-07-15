@@ -1,0 +1,159 @@
+{% extends 'marketplace/base.html' %}
+
+{% block content %}
+<div class="container my-5 py-3">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden bg-white reveal-up">
+                
+                <div class="p-4 bg-light border-bottom border-light-subtle d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <span class="badge px-3 py-2 rounded-pill small fw-extrabold text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px; background: rgba(0, 210, 211, 0.1); color: #00b8b9;">
+                        <i class="bi bi-tag-fill me-1"></i>{{ task.get_category_display }}
+                    </span>
+                    <div class="text-md-end">
+                        <span class="text-muted small d-block fw-semibold text-uppercase tracking-wider" style="font-size: 0.6rem;">Allocated Escrow</span>
+                        <h3 class="fw-extrabold text-success mb-0">৳{{ task.budget }}</h3>
+                    </div>
+                </div>
+
+                <div class="card-body p-5">
+                    <h1 class="fw-extrabold text-dark mb-3" style="font-size: 2rem; line-height: 1.3;">{{ task.title }}</h1>
+                    
+                    <div class="d-flex align-items-center text-muted small mb-4 flex-wrap gap-3">
+                        <span class="fw-medium"><i class="bi bi-geo-alt-fill text-danger me-1"></i>{{ task.location }}</span>
+                        <span class="text-light-subtle d-none d-sm-inline">|</span>
+                        <span class="fw-medium"><i class="bi bi-person-badge-fill text-primary me-1"></i>Posted by: {{ task.posted_by.first_name|default:task.posted_by.username }}</span>
+                        <span class="text-light-subtle d-none d-sm-inline">|</span>
+                        <span class="fw-medium"><i class="bi bi-calendar3 me-1"></i>{{ task.created_at|date:"M d, Y" }}</span>
+                    </div>
+                    
+                    <hr class="my-4 border-light-subtle">
+                    
+                    <h5 class="fw-extrabold text-dark mb-3 text-uppercase tracking-wider" style="font-size: 0.75rem;"><i class="bi bi-file-earmark-text me-1 text-secondary"></i>Job Specifications &amp; Requirements</h5>
+                    <p class="text-secondary leading-relaxed bg-light p-4 rounded-4 border border-light-subtle text-start" style="white-space: pre-line; line-height: 1.7; font-size: 0.95rem;">{{ task.description }}</p>
+
+                    <div class="mt-5 pt-4 border-top border-light-subtle">
+                        {% if user.is_authenticated %}
+                            {% if user == task.posted_by %}
+                                <div class="p-3 rounded-4 d-flex align-items-start text-start border" style="background: rgba(255, 193, 7, 0.04); border-color: rgba(255, 193, 7, 0.2) !important;">
+                                    <i class="bi bi-exclamation-triangle-fill text-warning fs-5 me-3 mt-0.5"></i>
+                                    <div>
+                                        <span class="text-uppercase fw-bold text-dark d-block mb-1" style="font-size: 0.65rem; letter-spacing: 0.5px;">Ecosystem Ownership Record</span>
+                                        <small class="text-secondary d-block" style="font-size: 0.75rem; line-height: 1.4;">
+                                            You initialized this deployment file node. Monitor active incoming provider bids and pipeline stages inside your <a href="{% url 'seeker_activity_log' %}" class="fw-bold text-warning text-decoration-none border-bottom border-warning pb-0.5">Operator Dashboard Log</a>.
+                                        </small>
+                                    </div>
+                                </div>
+                            {% elif already_applied %}
+                                <div class="p-3 rounded-4 d-flex align-items-start text-start border" style="background: rgba(52, 152, 219, 0.04); border-color: rgba(52, 152, 219, 0.2) !important;">
+                                    <i class="bi bi-check-circle-fill text-primary fs-5 me-3 mt-0.5"></i>
+                                    <div>
+                                        <span class="text-uppercase fw-bold text-dark d-block mb-1" style="font-size: 0.65rem; letter-spacing: 0.5px;">Proposal Transmission Active</span>
+                                        <small class="text-secondary d-block" style="font-size: 0.75rem; line-height: 1.4;">
+                                            Your application credentials have been compiled into this task log. You can track progress or adjust parameters within your <a href="{% url 'worker_proposals' %}" class="fw-bold text-primary text-decoration-none border-bottom border-primary pb-0.5">Proposal Monitor Panel</a>.
+                                        </small>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <button class="btn btn-info w-100 py-3 rounded-pill fw-bold text-white shadow transition-all hover-lift" data-bs-toggle="modal" data-bs-target="#applyModal">
+                                    <i class="bi bi-send-plus-fill me-2"></i>Initialize Proposal &amp; Text Seeker
+                                </button>
+                            {% endif %}
+                        {% else %}
+                            <a href="{% url 'login_view' %}" class="btn btn-outline-info w-100 py-3 rounded-pill fw-bold custom-auth-action">
+                                <i class="bi bi-shield-lock-fill me-2"></i>Authenticate Profile to Apply
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="applyModal" tabindex="-1" aria-labelledby="applyModalLabel" aria-hidden="true" data-bs-backdrop="false" style="background: rgba(0,0,0,0.55); z-index: 1050;">
+    <div class="modal-dialog modal-dialog-centered" style="z-index: 1060;">
+        <form method="POST" action="{% url 'apply_task' task.id %}" class="modal-content border-0 rounded-4 shadow-lg bg-white overflow-hidden">
+            {% csrf_token %}
+            <div class="p-4 text-white position-relative" style="background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%); border-bottom: 3px solid #00d2d3;">
+                <div class="position-absolute" style="top: -20%; right: -5%; width: 120px; height: 120px; background: rgba(0, 210, 211, 0.12); border-radius: 50%; filter: blur(20px); pointer-events: none;"></div>
+                <div class="d-flex justify-content-between align-items-center position-relative z-3">
+                    <div>
+                        <h5 class="fw-extrabold mb-1" id="applyModalLabel" style="letter-spacing: 0.5px;">Transmit Proposal</h5>
+                        <small class="text-white-50">Fulfill requirement: {{ task.title|truncatechars:28 }}</small>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+            </div>
+            
+            <div class="modal-body p-4 bg-white text-start">
+                <div class="mb-4">
+                    <label class="form-label small fw-bold text-secondary mb-2">
+                        <i class="bi bi-currency-bangla text-success me-1"></i>Your Proposed Bid (৳)
+                    </label>
+                    <div class="input-group shadow-sm rounded-3 overflow-hidden">
+                        <span class="input-group-text bg-light text-muted border-end-0 fw-bold px-3">৳</span>
+                        <input type="number" name="bid_amount" class="form-control rounded-end-3 custom-modal-field border-start-0 ps-1 fw-bold text-dark" value="{{ task.budget }}" required>
+                    </div>
+                    <small class="text-muted d-block mt-1" style="font-size: 0.7rem;">Target execution sum visible to the seeker.</small>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-secondary mb-2">
+                        <i class="bi bi-chat-square-dots-fill text-info me-1"></i>Cover Message Introduction
+                    </label>
+                    <textarea name="message" class="form-control rounded-3 custom-modal-field p-3" rows="4" placeholder="Detail your experience parameters, equipment availability, or specific setup metrics clearly to outrank competing logs..." required></textarea>
+                </div>
+            </div>
+            
+            <div class="modal-footer border-0 p-4 pt-0">
+                <button type="submit" class="btn btn-info w-100 py-2.5 rounded-pill fw-bold text-white shadow-sm transition-all hover-lift">
+                    <i class="bi bi-send-check-fill me-2"></i>Dispatch Proposal Framework
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    /* Premium Input Interaction Layers */
+    .custom-modal-field {
+        border: 1px solid #ced4da;
+        font-size: 0.9rem;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        background-color: #fafbfc;
+    }
+    .custom-modal-field:focus {
+        border-color: #00d2d3 !important;
+        box-shadow: 0 0 0 4px rgba(0, 210, 211, 0.15) !important;
+        background-color: #ffffff;
+    }
+
+    /* Input Group Depth Fixing */
+    .input-group .form-control {
+        z-index: 3;
+    }
+
+    /* Branded Outlined Buttons */
+    .custom-auth-action {
+        border-width: 2px;
+        color: #00b8b9;
+        border-color: #00d2d3;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .custom-auth-action:hover {
+        background-color: #00d2d3 !important;
+        border-color: #00d2d3 !important;
+        color: white !important;
+    }
+
+    /* Core Micro-Movement Properties */
+    .transition-all { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+    .hover-lift:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0, 210, 211, 0.2) !important; }
+    .tracking-wider { letter-spacing: 0.5px; }
+    .fw-extrabold { font-weight: 800; }
+    .cursor-pointer { cursor: pointer; }
+</style>
+{% endblock %}
